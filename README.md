@@ -1,0 +1,1 @@
+# TKOM-Interpreter-prostego-jezyka
