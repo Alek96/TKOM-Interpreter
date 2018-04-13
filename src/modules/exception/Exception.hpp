@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
+#include <string>
 
 #include "token/Token.hpp"
 
@@ -22,6 +23,12 @@ namespace tkom {
                               ss << token;
                               return ss.str();
                           }()) {}
+    };
+
+    class MathException : public Exception {
+    public:
+        explicit MathException(std::string &message) :
+                Exception("Can't compare different dimension vector at line: " + message) {}
     };
 }
 

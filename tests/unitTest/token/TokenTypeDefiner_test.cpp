@@ -14,7 +14,7 @@ SCENARIO("Test for TokenTypeDefiner", "[TokenTypeDefiner][TokenType]") {
         REQUIRE(TokenTypeDefiner::exist("return"));
         REQUIRE(TokenTypeDefiner::exist("continue"));
         REQUIRE(TokenTypeDefiner::exist("break"));
-        REQUIRE(TokenTypeDefiner::exist("var"));
+        REQUIRE(TokenTypeDefiner::exist("literal"));
         REQUIRE(TokenTypeDefiner::exist("vec"));
         REQUIRE(TokenTypeDefiner::exist("print"));
 
@@ -52,7 +52,7 @@ SCENARIO("Test for TokenTypeDefiner", "[TokenTypeDefiner][TokenType]") {
         REQUIRE(TokenTypeDefiner::find("return") == TokenType::Return);
         REQUIRE(TokenTypeDefiner::find("continue") == TokenType::Continue);
         REQUIRE(TokenTypeDefiner::find("break") == TokenType::Break);
-        REQUIRE(TokenTypeDefiner::find("var") == TokenType::Var);
+        REQUIRE(TokenTypeDefiner::find("literal") == TokenType::Var);
         REQUIRE(TokenTypeDefiner::find("vec") == TokenType::Vec);
         REQUIRE(TokenTypeDefiner::find("print") == TokenType::Print);
 

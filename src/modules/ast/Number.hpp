@@ -2,11 +2,10 @@
 #define INTERPRETER_NUMBER_HPP
 
 #include <ostream>
-#include "Variable.hpp"
 
 namespace tkom { namespace ast {
 
-    class Number : public Variable {
+    class Number {
     public:
         explicit Number(const int& value);
 
@@ -18,9 +17,6 @@ namespace tkom { namespace ast {
         bool operator<=(const Number &rhs) const;
         bool operator>=(const Number &rhs) const;
 
-        const Type getType() const override;
-        bool compare(const Variable* other) override;
-
         const int& getValue() const;
         void setValue(int value);
 
@@ -30,7 +26,7 @@ namespace tkom { namespace ast {
         int value;
     };
 
-    std::ostream &operator<<(std::ostream &os, const Number &number) {
+    inline std::ostream &operator<<(std::ostream &os, const Number &number) {
         os << number.value;
         return os;
     }

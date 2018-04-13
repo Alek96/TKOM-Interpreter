@@ -4,12 +4,12 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
-#include "../AST.hpp"
+#include "modules/ast/Statement.hpp"
 #include "Variable.hpp"
 
 namespace tkom { namespace ast {
 
-    class StatementBlock : public Node {
+    class StatementBlock : public Statement {
     public:
         explicit StatementBlock(const StatementBlock *block = nullptr) : block(block) {}
         StatementBlock(const StatementBlock &) = delete;
@@ -22,10 +22,10 @@ namespace tkom { namespace ast {
 //        StatementBlock &operator=(StatementBlock &) = delete;
         StatementBlock &operator=(StatementBlock &&other) = default;
 
-        void addInstruction(const Node &node) {
+        void addInstruction(const Statement &node) {
             this->instructions.push_back(node);
         }
-        void addVariable(const std::string& identifier, Variable* variable) {
+        void addVariable(const std::string& identifier, Variable variable) {
             variables.insert({identifier, variable});
         }
 
@@ -38,8 +38,8 @@ namespace tkom { namespace ast {
 
     private:
         const StatementBlock *block;
-        std::vector<Node> instructions;
-        std::unordered_map<std::string, Variable*> variables;
+        std::vector<Statement> instructions;
+        std::unordered_map<std::string, Variable> variables;
     };
 
 }

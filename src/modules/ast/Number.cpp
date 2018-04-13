@@ -30,10 +30,6 @@ bool Number::operator>=(const Number &rhs) const {
     return !(*this < rhs);
 }
 
-const Variable::Type Number::getType() const {
-    return Type::number;
-}
-
 const int &Number::getValue() const {
     return value;
 }

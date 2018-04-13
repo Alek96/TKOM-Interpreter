@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-#include "../AST.hpp"
+#include "modules/ast/Statement.hpp"
 #include "StatementBlock.hpp"
 #include "Variable.hpp"
 
@@ -20,8 +20,12 @@ namespace tkom { namespace ast {
         }
 
         void run(std::vector<Variable> var) {
-            //statementBlock add variables
-            //statementBlock run
+            if(parameters.size() != var.size())
+                return;
+            for (int i = 0; i < parameters.size(); ++i) {
+                block.addVariable(parameters[i], var[i]);
+            }
+            block.run();
         };
 
     private:
@@ -33,6 +37,3 @@ namespace tkom { namespace ast {
 }
 
 #endif //INTERPRETER_FUNTIONDEF_HPP
-
-///variables inaczej zrobic
-///wyrazenia matematyczne nie działaja

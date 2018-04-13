@@ -2,7 +2,7 @@
 #define INTERPRETER_PROGRAM_HPP
 
 #include <vector>
-#include "../AST.hpp"
+#include "modules/ast/Statement.hpp"
 #include "FunctionDef.hpp"
 
 namespace tkom { namespace ast {

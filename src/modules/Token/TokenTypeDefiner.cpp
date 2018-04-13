@@ -78,7 +78,7 @@ const std::unordered_map<std::string, TokenType> &TokenTypeDefiner::getKeywords(
             {"return",   TokenType::Return},
             {"continue", TokenType::Continue},
             {"break",    TokenType::Break},
-            {"var",      TokenType::Var},
+            {"literal",      TokenType::Var},
             {"vec",      TokenType::Vec},
             {"print",    TokenType::Print}
     };

@@ -37,10 +37,6 @@ const int &Vector3::operator[](std::size_t idx) const {
     return value[idx];
 }
 
-const Variable::Type Vector3::getType() const {
-    return Type::vector3;
-}
-
 const std::vector<int> Vector3::getValue() const {
     return value;
 }

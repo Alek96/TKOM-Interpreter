@@ -2,9 +2,9 @@
 #define INTERPRETER_AST_HPP
 
 namespace tkom {
-    class Node {
+    class Statement {
     public:
-        virtual ~Node() {}
+        virtual ~Statement() = default;
         virtual void run() = 0;
     };
 }

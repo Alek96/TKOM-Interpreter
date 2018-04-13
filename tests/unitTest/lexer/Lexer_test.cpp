@@ -43,7 +43,7 @@ SCENARIO("Test for Lexer","[Lexer]") {
                                   "return "
                                   "continue "
                                   "break "
-                                  "var "
+                                  "literal "
                                   "vec "
                                   "print ";
         std::istringstream istream(streamValue);

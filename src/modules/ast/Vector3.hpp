@@ -3,11 +3,10 @@
 
 #include <vector>
 #include <ostream>
-#include "Variable.hpp"
 
 namespace tkom { namespace ast {
 
-    class Vector3 : public Variable{
+    class Vector3 {
     public:
         explicit Vector3(const int &value1, const int &value2, const int &value3);
 
@@ -22,9 +21,6 @@ namespace tkom { namespace ast {
         int& operator[](std::size_t idx);
         const int& operator[](std::size_t idx) const;
 
-        const Type getType() const override;
-        bool compare(const Variable* other) override;
-
         const std::vector<int> getValue() const;
         const int &getValue(const int &index) const;
         void setValue(const std::vector<int> &value);
@@ -35,7 +31,7 @@ namespace tkom { namespace ast {
         std::vector<int> value;
     };
 
-    std::ostream &operator<<(std::ostream &os, const Vector3 &vector3) {
+    inline std::ostream &operator<<(std::ostream &os, const Vector3 &vector3) {
         os << "(" << vector3.value[0]
            << "," << vector3.value[1]
            << "," << vector3.value[2]
