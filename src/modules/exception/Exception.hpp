@@ -16,7 +16,7 @@ namespace tkom {
 
     class InvalidTokenException : public Exception {
     public:
-        explicit InvalidTokenException(Token &token) :
+        explicit InvalidTokenException(const Token &token) :
                 Exception("Undefined token: " +
                           [&]() {
                               std::stringstream ss;
@@ -27,9 +27,11 @@ namespace tkom {
 
     class MathException : public Exception {
     public:
-        explicit MathException(std::string &message) :
-                Exception("Can't compare different dimension vector at line: " + message) {}
+        explicit MathException(std::string message) :
+                Exception(message) {}
     };
 }
 
 #endif //INTERPRETER_EXCEPTION_HPP
+
+///to string

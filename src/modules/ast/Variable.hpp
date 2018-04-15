@@ -3,22 +3,13 @@
 
 #include <memory>
 #include <ostream>
-#include "Number.hpp"
-#include "Vector2.hpp"
-#include "Vector3.hpp"
+#include <vector>
 
 namespace tkom {
     namespace ast {
 
         class Variable {
         public:
-            enum class Type {
-                none,
-                number,
-                vector2,
-                vector3
-            };
-
             Variable() = default;
             explicit Variable(std::vector<int> variables);
             Variable(const Variable&) = default;
@@ -52,8 +43,6 @@ namespace tkom {
 
             explicit operator bool() const;
 
-            virtual const Type getType() const;
-
             friend std::ostream &operator<<(std::ostream &os, const Variable &variable);
 
         private:
@@ -74,37 +63,6 @@ namespace tkom {
             os << ")";
             return os;
         }
-
-
-        /*class Variable {
-        public:
-            enum class Type {
-                none,
-                number,
-                vector2,
-                vector3
-            };
-            union variable {
-                Number* number = nullptr;
-                Vector2* vector2 = nullptr;
-                Vector3* vector3 = nullptr;
-            };
-            explicit Variable(Number* number);
-            explicit Variable(Vector2* vector2);
-            explicit Variable(Vector3* vector3);
-
-            virtual ~Variable();
-
-            bool operator==(const Variable &rhs) const;
-
-            bool operator!=(const Variable &rhs) const;
-
-            virtual const Type getType() const;
-
-        private:
-            const Type type = Type::none;
-            variable literal;
-        };*/
     }
 }
 
@@ -115,3 +73,4 @@ namespace tkom {
 
 //kiedy rzucac wyjatkami co do matematyki?
 //sprawdzac czy mozna / 0 i % 0?
+//asercie

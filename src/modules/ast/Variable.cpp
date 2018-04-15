@@ -1,4 +1,7 @@
 #include "Variable.hpp"
+#include "exception/Exception.hpp"
+
+#include <string>
 
 using namespace tkom::ast;
 
@@ -28,23 +31,6 @@ Variable Variable::operator==(const Variable &rhs) const {
     } else {
         return vFalse();
     }
-//    int i=0;
-//    for (; i < variables.size() && i < rhs.variables.size(); ++i) {
-//        if(variables[i] != rhs.variables[i])
-//            return false;
-//    }
-//    if(variables.size() > rhs.variables.size()) {
-//        for (; i < variables.size(); ++i) {
-//            if(variables[i] != 0)
-//                return false;
-//        }
-//    } else {
-//        for (; i < rhs.variables.size(); ++i) {
-//            if(rhs.variables[i] != 0)
-//                return false;
-//        }
-//    }
-//    return true;
 }
 
 Variable Variable::operator!=(const Variable &rhs) const {
@@ -90,6 +76,10 @@ Variable Variable::operator+(const Variable &rhs) const {
         for (unsigned int i = 0; i < variables.size(); ++i) {
             var[i] += rhs.variables[i];
         }
+    } else {
+        throw MathException("Can't add "
+                            + std::to_string(variables.size()) + "-dimension vector and "
+                            + std::to_string(rhs.variables.size()) + "-dimension vector at line: ...");
     }
 
     return var;
@@ -102,6 +92,10 @@ Variable Variable::operator-(const Variable &rhs) const {
         for (unsigned int i = 0; i < variables.size(); ++i) {
             var[i] -= rhs.variables[i];
         }
+    } else {
+        throw MathException("Can't compare "
+                            + std::to_string(variables.size()) + "-dimension vector and "
+                            + std::to_string(rhs.variables.size()) + "-dimension vector at line: ...");
     }
 
     return var;
@@ -109,11 +103,20 @@ Variable Variable::operator-(const Variable &rhs) const {
 
 Variable Variable::operator*(const Variable &rhs) const {
     Variable var;
-    if (variables.size() == rhs.variables.size()) {
-        var = *this;
-        for (unsigned int i = 0; i < variables.size(); ++i) {
-            var[i] *= rhs.variables[i];
+    if (variables.size() == 1) {
+        var = rhs;
+        for (auto &variable : var.variables) {
+            variable *= variables[0];
         }
+    } else if (rhs.variables.size() == 1) {
+        var = *this;
+        for (auto &variable : var.variables) {
+            variable *= rhs.variables[0];
+        }
+    } else {
+        throw MathException("Can't multiply "
+                            + std::to_string(variables.size()) + "-dimension vector and "
+                            + std::to_string(rhs.variables.size()) + "-dimension vector at line: ...");
     }
 
     return var;
@@ -121,11 +124,15 @@ Variable Variable::operator*(const Variable &rhs) const {
 
 Variable Variable::operator/(const Variable &rhs) const {
     Variable var;
-    if (variables.size() == rhs.variables.size()) {
+    if (rhs.variables.size() == 1) {
         var = *this;
-        for (unsigned int i = 0; i < variables.size(); ++i) {
-            var[i] /= rhs.variables[i];
+        for (auto &variable : var.variables) {
+            variable /= rhs.variables[0];
         }
+    } else {
+        throw MathException("Can't divide "
+                            + std::to_string(variables.size()) + "-dimension vector and "
+                            + std::to_string(rhs.variables.size()) + "-dimension vector at line: ...");
     }
 
     return var;
@@ -133,22 +140,22 @@ Variable Variable::operator/(const Variable &rhs) const {
 
 Variable Variable::operator%(const Variable &rhs) const {
     Variable var;
-    if (variables.size() == rhs.variables.size()) {
+    if (rhs.variables.size() == 1) {
         var = *this;
-        for (unsigned int i = 0; i < variables.size(); ++i) {
-            var[i] %= rhs.variables[i];
+        for (auto &variable : var.variables) {
+            variable %= rhs.variables[0];
         }
+    } else {
+        throw MathException("Can't modulo "
+                            + std::to_string(variables.size()) + "-dimension vector and "
+                            + std::to_string(rhs.variables.size()) + "-dimension vector at line: ...");
     }
 
     return var;
 }
 
 Variable::operator bool() const {
-    for (auto &&var : variables) {
-        if (var)
-            return true;
-    }
-    return false;
+    return !variables.empty();
 }
 
 Variable Variable::operator!() const {
@@ -161,7 +168,6 @@ Variable Variable::operator!() const {
 
 Variable Variable::operator&&(const Variable &rhs) const {
     if (static_cast<bool>(*this) && static_cast<bool>(rhs)) {
-//        return Variable(std::vector<int>(1, 1));
         return vTrue();
     } else {
         return vFalse();
@@ -176,26 +182,10 @@ Variable Variable::operator||(const Variable &rhs) const {
     }
 }
 
-const Variable::Type Variable::getType() const {
-    switch (variables.size()) {
-        case 1:
-            return Type::number;
-
-        case 2:
-            return Type::vector2;
-
-        case 3:
-            return Type::vector3;
-
-        default:
-            return Type::none;
-    }
-}
-
 Variable Variable::vTrue() const {
     return Variable(std::vector<int>(1, 1));
 }
 
 Variable Variable::vFalse() const {
-    return Variable(std::vector<int>(1, 0));
+    return Variable();
 }

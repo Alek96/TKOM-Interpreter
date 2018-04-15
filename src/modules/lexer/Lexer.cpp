@@ -11,9 +11,8 @@ Lexer::Lexer(std::istream &istream)
         : reader(istream) {}
 
 void Lexer::readNextToken() {
-    sign = reader.get();
-    while (std::isspace(sign) && !reader.eof())
-        sign = reader.get();
+    while (std::isspace(reader.peek()) && !reader.eof())
+        reader.get();
 
     token = Token();
     token.position = reader.getPosition();
@@ -23,11 +22,11 @@ void Lexer::readNextToken() {
         return;
     }
 
-    if (std::isalpha(sign)) {
+    if (std::isalpha(reader.peek())) {
         defineTokenKeywordOrIdentifier();
-    } else if (std::isdigit(sign)) {
+    } else if (std::isdigit(reader.peek())) {
         defineTokenNumberLiteral();
-    } else if (sign == '"') {
+    } else if (reader.peek() == '"') {
         defineTokenStringLiteral();
     } else {
         defineTokenWithSpecialCharacter();
@@ -44,7 +43,7 @@ const Token Lexer::getToken() const {
 
 void Lexer::defineTokenKeywordOrIdentifier() {
     std::string buffer;
-    buffer.push_back(sign);
+    buffer.push_back(reader.get());
 
     while (std::isalnum(reader.peek()) || reader.peek() == '_' || reader.peek() == '$') {
         buffer.push_back(reader.get());
@@ -59,7 +58,7 @@ void Lexer::defineTokenKeywordOrIdentifier() {
 
 void Lexer::defineTokenNumberLiteral() {
     std::string buffer;
-    buffer.push_back(sign);
+    buffer.push_back(reader.get());
 
     while (std::isdigit(reader.peek())) {
         buffer.push_back(reader.get());
@@ -70,6 +69,7 @@ void Lexer::defineTokenNumberLiteral() {
 }
 
 void Lexer::defineTokenStringLiteral() {
+    reader.get();
     std::string buffer;
 
     while ((std::isprint(reader.peek()) || std::isspace(reader.peek()))
@@ -97,67 +97,47 @@ void Lexer::defineTokenStringLiteral() {
 }
 
 void Lexer::defineTokenWithSpecialCharacter() {
-    switch (sign) {
+
+    auto readNextSign = [&](const char sign, TokenType exist, TokenType notExist) {
+        reader.get();
+        if (reader.peek() == sign) {
+            reader.get();
+            token.type = exist;
+        } else {
+            token.type = notExist;
+        }
+    };
+
+    switch (reader.peek()) {
         case '=': {
-            if (reader.peek() == '=') {
-                reader.get();
-                token.type = TokenType::Equality;
-            } else {
-                token.type = TokenType::Assignment;
-            }
+            readNextSign('=', TokenType::Equality, TokenType::Assignment);
             break;
         }
         case '<': {
-            if (reader.peek() == '=') {
-                reader.get();
-                token.type = TokenType::LessOrEqual;
-            } else {
-                token.type = TokenType::Less;
-            }
+            readNextSign('=', TokenType::LessOrEqual, TokenType::Less);
             break;
         }
         case '>': {
-            if (reader.peek() == '=') {
-                reader.get();
-                token.type = TokenType::GreaterOrEqual;
-            } else {
-                token.type = TokenType::Greater;
-            }
+            readNextSign('=', TokenType::GreaterOrEqual, TokenType::Greater);
             break;
         }
         case '!': {
-            if (reader.peek() == '=') {
-                reader.get();
-                token.type = TokenType::Inequality;
-            } else {
-                token.type = TokenType::Negation;
-            }
+            readNextSign('=', TokenType::Inequality, TokenType::Negation);
             break;
         }
         case '&': {
-            if (reader.peek() == '&') {
-                reader.get();
-                token.type = TokenType::And;
-            } else {
-                token.type = TokenType::Invalid;
-                token.value = sign;
-            }
+            readNextSign('&', TokenType::And, TokenType::Invalid);
             break;
         }
         case '|': {
-            if (reader.peek() == '|') {
-                reader.get();
-                token.type = TokenType::Or;
-            } else {
-                token.type = TokenType::Invalid;
-                token.value = sign;
-            }
+            readNextSign('|', TokenType::Or, TokenType::Invalid);
             break;
         }
         default: {
-            token.type = TokenTypeDefiner::find(sign);
-            if(token.type == TokenType::Invalid)
-                token.value = sign;
+            token.type = TokenTypeDefiner::find(reader.peek());
+            if (token.type == TokenType::Invalid)
+                token.value = reader.peek();
+            reader.get();
             break;
         }
     }

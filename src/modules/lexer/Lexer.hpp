@@ -22,7 +22,6 @@ namespace tkom {
     private:
         Reader reader;
         Token token;
-        char sign;
 
         void defineTokenKeywordOrIdentifier();
         void defineTokenNumberLiteral();

@@ -167,8 +167,8 @@ SCENARIO("Test for Lexer","[Lexer]") {
         Lexer lexer(stream);
 
         WHEN("Character '(' appears") {
+            stream << "(";
             THEN("Token ParenthesisOpen is read") {
-                stream << "(";
                 lexer.readNextToken(); REQUIRE(lexer.getToken().type == TokenType::ParenthesisOpen);
                 lexer.readNextToken(); REQUIRE(lexer.getToken().type == TokenType::EndOfFile);
             }
@@ -235,7 +235,6 @@ SCENARIO("Test for Lexer","[Lexer]") {
             THEN("Token StringLiteral is read") {
                 REQUIRE_THROWS_AS(lexer.readNextToken(), InvalidTokenException);
                 REQUIRE(lexer.getToken().type == TokenType::Invalid);
-                REQUIRE(lexer.getToken().value == message);
             }
         }
         WHEN("Character | appears") {
@@ -244,7 +243,6 @@ SCENARIO("Test for Lexer","[Lexer]") {
             THEN("Token StringLiteral is read") {
                 REQUIRE_THROWS_AS(lexer.readNextToken(), InvalidTokenException);
                 REQUIRE(lexer.getToken().type == TokenType::Invalid);
-                REQUIRE(lexer.getToken().value == message);
             }
         }
     }

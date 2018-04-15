@@ -10,6 +10,8 @@
 namespace tkom {
     namespace ast {
 
+        class MathExpr;
+
         class BaseLogicExpr : public Expression {
         public:
             explicit BaseLogicExpr(MathExpr &&mathExpr, bool unaryLogicOp);
@@ -20,21 +22,9 @@ namespace tkom {
             Variable calculate() override;
 
         private:
-            MathExpr mathExpr;
+            std::vector<MathExpr> mathExprs;
             bool unaryLogicOp = false;
         };
-
-        BaseLogicExpr::BaseLogicExpr(MathExpr &&mathExpr, bool unaryLogicOp)
-                : mathExpr(std::move(mathExpr)),
-                  unaryLogicOp(unaryLogicOp){}
-
-        BaseLogicExpr::BaseLogicExpr(BaseLogicExpr &&rhs) noexcept
-                : mathExpr(std::move(rhs.mathExpr)),
-                  unaryLogicOp(rhs.unaryLogicOp) {}
-
-        Variable BaseLogicExpr::calculate() {
-            return unaryLogicOp ? !mathExpr.calculate() : mathExpr.calculate();
-        }
     }
 }
 
