@@ -1,8 +1,9 @@
 #include "MathExpr.hpp"
+#include "exception/Exception.hpp"
 
 using namespace tkom::ast;
 
-MathExpr::MathExpr(MultiplicativeExpr &&multiplicativeExpr) {
+MathExpr::MathExpr(exprPtr multiplicativeExpr) {
     multiplicativeExprs.push_back(std::move(multiplicativeExpr));
 }
 
@@ -11,25 +12,28 @@ MathExpr::MathExpr(MathExpr &&rhs) noexcept
           additiveOps(std::move(rhs.additiveOps)) {}
 
 Variable MathExpr::calculate() {
-    if (multiplicativeExprs.empty()) {
-        return Variable();
+    auto itExpr = multiplicativeExprs.begin();
+    Variable var = itExpr->get()->calculate();
+
+    for (auto &&op : additiveOps) {
+        ++itExpr;
+        if (op == tkom::TokenType::Plus)
+            var = var + itExpr->get()->calculate();
+        else if (op == tkom::TokenType::Minus)
+            var = var - itExpr->get()->calculate();
+        else
+            throw Exception("Bad TokenType in additiveOps");
     }
-    Variable var = multiplicativeExprs[0].calculate();
-    for (unsigned int i = 1; i < multiplicativeExprs.size(); ++i) {
-        if (additiveOps[i - 1] == tkom::TokenType::Plus)
-            var = var + multiplicativeExprs[i].calculate();
-        else if (additiveOps[i - 1] == tkom::TokenType::Minus)
-            var = var - multiplicativeExprs[i].calculate();
-    }
+
     return var;
 }
 
-void MathExpr::addPlus(MultiplicativeExpr &&multiplicativeExpr) {
+void MathExpr::addPlus(exprPtr multiplicativeExpr) {
     multiplicativeExprs.push_back(std::move(multiplicativeExpr));
     additiveOps.push_back(tkom::TokenType::Plus);
 }
 
-void MathExpr::addMinus(MultiplicativeExpr &&multiplicativeExpr) {
+void MathExpr::addMinus(exprPtr multiplicativeExpr) {
     multiplicativeExprs.push_back(std::move(multiplicativeExpr));
     additiveOps.push_back(tkom::TokenType::Minus);
 }

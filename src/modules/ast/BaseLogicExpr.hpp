@@ -1,7 +1,7 @@
 #ifndef INTERPRETER_BASELOGICEXPR_HPP
 #define INTERPRETER_BASELOGICEXPR_HPP
 
-#include <vector>
+#include <list>
 #include "Variable.hpp"
 #include "Expression.hpp"
 #include "MathExpr.hpp"
@@ -10,11 +10,11 @@
 namespace tkom {
     namespace ast {
 
-        class MathExpr;
-
         class BaseLogicExpr : public Expression {
+            using exprPtr = std::unique_ptr<Expression>;
+
         public:
-            explicit BaseLogicExpr(MathExpr &&mathExpr, bool unaryLogicOp);
+            explicit BaseLogicExpr(exprPtr mathExpr, bool unaryLogicOp = false);
 
             BaseLogicExpr(const BaseLogicExpr &) = delete;
             BaseLogicExpr(BaseLogicExpr &&rhs)noexcept;
@@ -22,7 +22,7 @@ namespace tkom {
             Variable calculate() override;
 
         private:
-            std::vector<MathExpr> mathExprs;
+            std::list<exprPtr> mathExprs;
             bool unaryLogicOp = false;
         };
     }

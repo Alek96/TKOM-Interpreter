@@ -1,7 +1,7 @@
 #ifndef INTERPRETER_LOGICEXPR_HPP
 #define INTERPRETER_LOGICEXPR_HPP
 
-#include <vector>
+#include <list>
 #include "Variable.hpp"
 #include "Expression.hpp"
 #include "AndExpr.hpp"
@@ -10,22 +10,21 @@
 namespace tkom {
     namespace ast {
 
-        class AndExpr;
-
         class LogicExpr : public Expression {
+            using exprPtr = std::unique_ptr<Expression>;
+
         public:
-            explicit LogicExpr(AndExpr &&andExpr);
+            explicit LogicExpr(exprPtr andExpr);
 
             LogicExpr(const LogicExpr &) = delete;
             LogicExpr(LogicExpr &&rhs)noexcept;
 
             Variable calculate() override;
 
-            void addOr(AndExpr &&andExpr);
+            void addOr(exprPtr andExpr);
 
         private:
-            std::vector<AndExpr> andExprs;
-            std::vector<tkom::TokenType> orOps;
+            std::list<exprPtr> andExprs;
         };
     }
 }

@@ -1,7 +1,7 @@
 #ifndef INTERPRETER_RELATIONALEXPR_HPP
 #define INTERPRETER_RELATIONALEXPR_HPP
 
-#include <vector>
+#include <list>
 #include "Variable.hpp"
 #include "Expression.hpp"
 #include "BaseLogicExpr.hpp"
@@ -10,29 +10,29 @@
 namespace tkom {
     namespace ast {
 
-        class BaseLogicExpr;
-
         class RelationalExpr : public Expression {
+            using exprPtr = std::unique_ptr<Expression>;
+
         public:
-            explicit RelationalExpr(BaseLogicExpr &&baseLogicExpr);
+            explicit RelationalExpr(exprPtr baseLogicExpr);
 
             RelationalExpr(const RelationalExpr &) = delete;
             RelationalExpr(RelationalExpr &&rhs)noexcept;
 
             Variable calculate() override;
 
-            void addEquality(BaseLogicExpr &&baseLogicExpr);
-            void addInequality(BaseLogicExpr &&baseLogicExpr);
+            void addEquality(exprPtr baseLogicExpr);
+            void addInequality(exprPtr baseLogicExpr);
 
-            void addLess(BaseLogicExpr &&baseLogicExpr);
-            void addGreater(BaseLogicExpr &&baseLogicExpr);
+            void addLess(exprPtr baseLogicExpr);
+            void addGreater(exprPtr baseLogicExpr);
 
-            void addLessOrEqual(BaseLogicExpr &&baseLogicExpr);
-            void addGreaterOrEqual(BaseLogicExpr &&baseLogicExpr);
+            void addLessOrEqual(exprPtr baseLogicExpr);
+            void addGreaterOrEqual(exprPtr baseLogicExpr);
 
         private:
-            std::vector<BaseLogicExpr> baseLogicExprs;
-            std::vector<tkom::TokenType> relationOps;
+            std::list<exprPtr> baseLogicExprs;
+            std::list<tkom::TokenType> relationOps;
         };
     }
 }

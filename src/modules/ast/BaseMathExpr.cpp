@@ -10,25 +10,25 @@ BaseMathExpr::BaseMathExpr(Variable &variable, bool unaryMathOp)
         : unaryMathOp(unaryMathOp),
           variable(&variable) {}
 
-BaseMathExpr::BaseMathExpr(LogicExpr *expr, bool unaryMathOp)
+BaseMathExpr::BaseMathExpr(std::unique_ptr<Expression> expr, bool unaryMathOp)
         : unaryMathOp(unaryMathOp),
-          parenthLogicExpr(expr) {}
+          parenthLogicExpr(std::move(expr)) {}
 
 BaseMathExpr::BaseMathExpr(BaseMathExpr &&other) noexcept
         : unaryMathOp(other.unaryMathOp),
           literal(other.literal),
           variable(other.variable),
-          parenthLogicExpr(other.parenthLogicExpr) {
+          parenthLogicExpr(std::move(other.parenthLogicExpr)) {
 
     other.unaryMathOp = nullptr;
     other.literal = nullptr;
     //functionCall
-    other.parenthLogicExpr = nullptr;
+//    other.parenthLogicExpr = nullptr;
 }
 
 BaseMathExpr::~BaseMathExpr() {
     delete literal;
-    delete parenthLogicExpr;
+//    delete parenthLogicExpr;
 }
 
 Variable BaseMathExpr::calculate() {

@@ -1,7 +1,7 @@
 #ifndef INTERPRETER_MATHEXPR_HPP
 #define INTERPRETER_MATHEXPR_HPP
 
-#include <vector>
+#include <list>
 #include "Variable.hpp"
 #include "Expression.hpp"
 #include "MultiplicativeExpr.hpp"
@@ -10,23 +10,23 @@
 namespace tkom {
     namespace ast {
 
-        class MultiplicativeExpr;
-
         class MathExpr : public Expression {
+            using exprPtr = std::unique_ptr<Expression>;
+
         public:
-            explicit MathExpr(MultiplicativeExpr &&multiplicativeExpr);
+            explicit MathExpr(exprPtr multiplicativeExpr);
 
             MathExpr(const MathExpr &) = delete;
             MathExpr(MathExpr &&rhs)noexcept;
 
             Variable calculate() override;
 
-            void addPlus(MultiplicativeExpr &&multiplicativeExpr);
-            void addMinus(MultiplicativeExpr &&multiplicativeExpr);
+            void addPlus(exprPtr multiplicativeExpr);
+            void addMinus(exprPtr multiplicativeExpr);
 
         private:
-            std::vector<MultiplicativeExpr> multiplicativeExprs;
-            std::vector<tkom::TokenType> additiveOps;
+            std::list<exprPtr> multiplicativeExprs;
+            std::list<tkom::TokenType> additiveOps;
         };
     }
 }

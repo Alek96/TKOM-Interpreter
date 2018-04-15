@@ -4,7 +4,7 @@
 
 using namespace tkom::ast;
 
-AndExpr::AndExpr(RelationalExpr &&relationalExpr) {
+AndExpr::AndExpr(exprPtr relationalExpr) {
     relationalExprs.push_back(std::move(relationalExpr));
 }
 
@@ -12,14 +12,17 @@ AndExpr::AndExpr(AndExpr &&rhs) noexcept
         : relationalExprs(std::move(rhs.relationalExprs)) {}
 
 Variable AndExpr::calculate() {
-    Variable var({1});
-    for (auto &&relationalExpr : relationalExprs) {
-        var = var && relationalExpr.calculate();
+    Variable var = relationalExprs.begin()->get()->calculate();
+
+    for(auto it = ++relationalExprs.begin(); it!=relationalExprs.end(); ++it) {
+        var = var && it->get()->calculate();
+        if (!var)
+            break;
     }
 
     return var;
 }
 
-void AndExpr::addAnd(RelationalExpr &&relationalExpr) {
+void AndExpr::addAnd(exprPtr relationalExpr) {
     relationalExprs.push_back(std::move(relationalExpr));
 }

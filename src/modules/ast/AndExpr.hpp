@@ -9,21 +9,21 @@
 namespace tkom {
     namespace ast {
 
-        class RelationalExpr;
-
         class AndExpr : public Expression {
+            using exprPtr = std::unique_ptr<Expression>;
+
         public:
-            explicit AndExpr(RelationalExpr &&relationalExpr);
+            explicit AndExpr(exprPtr relationalExpr);
 
             AndExpr(const AndExpr &) = delete;
             AndExpr(AndExpr &&rhs)noexcept;
 
             Variable calculate() override;
 
-            void addAnd(RelationalExpr &&relationalExpr);
+            void addAnd(exprPtr relationalExpr);
 
         private:
-            std::list<RelationalExpr> relationalExprs;
+            std::list<exprPtr> relationalExprs;
         };
     }
 }

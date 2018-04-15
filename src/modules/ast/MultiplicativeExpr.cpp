@@ -1,9 +1,9 @@
 #include "MultiplicativeExpr.hpp"
+#include "exception/Exception.hpp"
 
 using namespace tkom::ast;
 
-
-MultiplicativeExpr::MultiplicativeExpr(BaseMathExpr &&baseMathExpr) {
+MultiplicativeExpr::MultiplicativeExpr(exprPtr baseMathExpr) {
     baseMathExprs.push_back(std::move(baseMathExpr));
 }
 
@@ -12,32 +12,35 @@ MultiplicativeExpr::MultiplicativeExpr(MultiplicativeExpr &&rhs) noexcept
           multiplicativeOps(std::move(rhs.multiplicativeOps)) {}
 
 Variable MultiplicativeExpr::calculate() {
-    if (baseMathExprs.empty()) {
-        return Variable();
+    auto itExpr = baseMathExprs.begin();
+    Variable var = itExpr->get()->calculate();
+
+    for (auto &&op : multiplicativeOps) {
+        ++itExpr;
+        if (op == tkom::TokenType::Multiply)
+            var = var * itExpr->get()->calculate();
+        else if (op == tkom::TokenType::Divide)
+            var = var / itExpr->get()->calculate();
+        else if (op == tkom::TokenType::Modulo)
+            var = var % itExpr->get()->calculate();
+        else
+            throw Exception("Bad TokenType in multiplicativeOps");
     }
-    Variable var = baseMathExprs[0].calculate();
-    for (unsigned int i = 1; i < baseMathExprs.size(); ++i) {
-        if (multiplicativeOps[i - 1] == tkom::TokenType::Multiply)
-            var = var * baseMathExprs[i].calculate();
-        else if (multiplicativeOps[i - 1] == tkom::TokenType::Divide)
-            var = var / baseMathExprs[i].calculate();
-        else if (multiplicativeOps[i - 1] == tkom::TokenType::Modulo)
-            var = var % baseMathExprs[i].calculate();
-    }
+
     return var;
 }
 
-void MultiplicativeExpr::addMultiply(BaseMathExpr &&baseMathExpr) {
+void MultiplicativeExpr::addMultiply(exprPtr baseMathExpr) {
     baseMathExprs.push_back(std::move(baseMathExpr));
     multiplicativeOps.push_back(tkom::TokenType::Multiply);
 }
 
-void MultiplicativeExpr::addDivide(BaseMathExpr &&baseMathExpr) {
+void MultiplicativeExpr::addDivide(exprPtr baseMathExpr) {
     baseMathExprs.push_back(std::move(baseMathExpr));
     multiplicativeOps.push_back(tkom::TokenType::Divide);
 }
 
-void MultiplicativeExpr::addModulo(BaseMathExpr &&baseMathExpr) {
+void MultiplicativeExpr::addModulo(exprPtr baseMathExpr) {
     baseMathExprs.push_back(std::move(baseMathExpr));
     multiplicativeOps.push_back(tkom::TokenType::Modulo);
 }

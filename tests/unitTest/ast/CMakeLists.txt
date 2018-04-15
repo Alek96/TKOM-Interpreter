@@ -2,6 +2,12 @@ set(SOURCE_FILES_TEST
         ${SOURCE_FILES_TEST}
         ${CMAKE_CURRENT_SOURCE_DIR}/Variable_test.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/BaseMathExpr_test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/MultiplicativeExpr_test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/MathExpr_test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/BaseLogicExpr_test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/RelationalExpr_test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/AndExpr_test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/LogicExpr_test.cpp
 #        ${CMAKE_CURRENT_SOURCE_DIR}/Variable_test.cpp
 #        ${CMAKE_CURRENT_SOURCE_DIR}/Variable_test.cpp
 #        ${CMAKE_CURRENT_SOURCE_DIR}/Variable_test.cpp

@@ -2,7 +2,7 @@
 
 using namespace tkom::ast;
 
-BaseLogicExpr::BaseLogicExpr(MathExpr &&mathExpr, bool unaryLogicOp)
+BaseLogicExpr::BaseLogicExpr(exprPtr mathExpr, bool unaryLogicOp)
         : /*mathExpr(std::move(mathExpr)),*/
         unaryLogicOp(unaryLogicOp) {
     mathExprs.push_back(std::move(mathExpr));
@@ -15,5 +15,5 @@ BaseLogicExpr::BaseLogicExpr(BaseLogicExpr &&rhs) noexcept
         }
 
 Variable BaseLogicExpr::calculate() {
-    return unaryLogicOp ? !mathExprs[0].calculate() : mathExprs[0].calculate();
+    return unaryLogicOp ? !mathExprs.begin()->get()->calculate() : mathExprs.begin()->get()->calculate();
 }
