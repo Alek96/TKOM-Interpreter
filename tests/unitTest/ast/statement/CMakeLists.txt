@@ -1,0 +1,13 @@
+set(SOURCE_FILES_TEST
+        ${SOURCE_FILES_TEST}
+        ${CMAKE_CURRENT_SOURCE_DIR}/AssignStatement_test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/ReturnStatement_test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/IfStatement_test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/BlockStatement_test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/WhileStatement_test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/PrintStatement_test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/FunctionCall_test.cpp
+        #        ${CMAKE_CURRENT_SOURCE_DIR}/AssignStatement.cpp
+        #        ${CMAKE_CURRENT_SOURCE_DIR}/AssignStatement.cpp
+        PARENT_SCOPE
+        )

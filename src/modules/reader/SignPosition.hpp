@@ -1,7 +1,6 @@
 #ifndef INTERPRETER_SIGNPOSITION_HPP
 #define INTERPRETER_SIGNPOSITION_HPP
 
-#include <fstream>
 #include <ostream>
 
 namespace tkom {
@@ -19,6 +18,7 @@ namespace tkom {
         bool operator>=(const SignPosition &rhs) const;
 
         friend std::ostream &operator<<(std::ostream &os, const SignPosition &position);
+        const std::string toString() const;
 
         unsigned int lineNumber;
         unsigned int signNumber;

@@ -10,6 +10,9 @@ using namespace tkom::ast;
 SCENARIO("Test for Variable", "[ast][Variable]") {
     GIVEN("Empty Variable object") {
         Variable var;
+        THEN("Method size return 0") {
+            REQUIRE(var.size() == 0);
+        }
         THEN("Operator == works") {
             REQUIRE(var == Variable());
         }
@@ -28,6 +31,9 @@ SCENARIO("Test for Variable", "[ast][Variable]") {
     }
     GIVEN("Variable object with 1 dimension") {
         Variable var({1});
+        THEN("Method size return 1") {
+            REQUIRE(var.size() == 1);
+        }
         THEN("Operator == works") {
             REQUIRE(var == Variable({1}));
             REQUIRE_FALSE(var == Variable({0}));
@@ -93,6 +99,9 @@ SCENARIO("Test for Variable", "[ast][Variable]") {
     }
     GIVEN("Variable object with 2 dimension") {
         Variable var({1, 2});
+        THEN("Method size return 2") {
+            REQUIRE(var.size() == 2);
+        }
         THEN("Operator == works") {
             REQUIRE(var == Variable({1, 2}));
             REQUIRE_FALSE(var == Variable({0, 2}));

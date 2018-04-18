@@ -2,6 +2,7 @@
 #include "exception/Exception.hpp"
 
 #include <string>
+#include <sstream>
 
 using namespace tkom::ast;
 
@@ -79,7 +80,8 @@ Variable Variable::operator+(const Variable &rhs) const {
     } else {
         throw MathException("Can't add "
                             + std::to_string(variables.size()) + "-dimension vector and "
-                            + std::to_string(rhs.variables.size()) + "-dimension vector at line: ...");
+                            + std::to_string(rhs.variables.size()) + "-dimension vector "
+                            + (sPos != SignPosition() ? "at line: " + sPos.toString() : ""));
     }
 
     return var;
@@ -95,7 +97,8 @@ Variable Variable::operator-(const Variable &rhs) const {
     } else {
         throw MathException("Can't compare "
                             + std::to_string(variables.size()) + "-dimension vector and "
-                            + std::to_string(rhs.variables.size()) + "-dimension vector at line: ...");
+                            + std::to_string(rhs.variables.size()) + "-dimension vector "
+                            + (sPos != SignPosition() ? "at line: " + sPos.toString() : ""));
     }
 
     return var;
@@ -116,7 +119,8 @@ Variable Variable::operator*(const Variable &rhs) const {
     } else {
         throw MathException("Can't multiply "
                             + std::to_string(variables.size()) + "-dimension vector and "
-                            + std::to_string(rhs.variables.size()) + "-dimension vector at line: ...");
+                            + std::to_string(rhs.variables.size()) + "-dimension vector "
+                            + (sPos != SignPosition() ? "at line: " + sPos.toString() : ""));
     }
 
     return var;
@@ -131,8 +135,9 @@ Variable Variable::operator/(const Variable &rhs) const {
         }
     } else {
         throw MathException("Can't divide "
-                            + std::to_string(variables.size()) + "-dimension vector and "
-                            + std::to_string(rhs.variables.size()) + "-dimension vector at line: ...");
+                            + std::to_string(variables.size()) + "-dimension vector by "
+                            + std::to_string(rhs.variables.size()) + "-dimension vector "
+                            + (sPos != SignPosition() ? "at line: " + sPos.toString() : ""));
     }
 
     return var;
@@ -147,8 +152,9 @@ Variable Variable::operator%(const Variable &rhs) const {
         }
     } else {
         throw MathException("Can't modulo "
-                            + std::to_string(variables.size()) + "-dimension vector and "
-                            + std::to_string(rhs.variables.size()) + "-dimension vector at line: ...");
+                            + std::to_string(variables.size()) + "-dimension vector by "
+                            + std::to_string(rhs.variables.size()) + "-dimension vector "
+                            + (sPos != SignPosition() ? "at line: " + sPos.toString() : ""));
     }
 
     return var;
@@ -188,4 +194,40 @@ Variable Variable::vTrue() const {
 
 Variable Variable::vFalse() const {
     return Variable();
+}
+
+const unsigned int Variable::size() const {
+    return variables.size();
+}
+
+const tkom::SignPosition &Variable::getPosition() const {
+    return sPos;
+}
+
+void Variable::setPosition(const tkom::SignPosition &sPos) {
+    Variable::sPos = sPos;
+}
+
+int &Variable::at(unsigned idx) {
+    if (0 <= idx && idx < variables.size()) {
+        return variables.at(idx);
+    } else {
+        throw MathException("index out of range of n-dimension vector's "
+                            + (sPos != SignPosition() ? "at line: " + sPos.toString() : ""));
+    }
+}
+
+const int &Variable::at(unsigned idx) const {
+    if (0 <= idx && idx < variables.size()) {
+        return variables.at(idx);
+    } else {
+        throw MathException("index out of range of n-dimension vector's "
+                            + (sPos != SignPosition() ? "at line: " + sPos.toString() : ""));
+    }
+}
+
+const std::string Variable::toString() const {
+    std::stringstream ss;
+    ss << *this;
+    return ss.str();
 }

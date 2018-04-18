@@ -4,6 +4,7 @@
 #include <memory>
 #include <ostream>
 #include <vector>
+#include "reader/SignPosition.hpp"
 
 namespace tkom {
     namespace ast {
@@ -44,9 +45,18 @@ namespace tkom {
             explicit operator bool() const;
 
             friend std::ostream &operator<<(std::ostream &os, const Variable &variable);
+            const std::string toString() const;
+
+            int& at(unsigned idx);
+            const int& at(unsigned idx) const;
+            const unsigned int size() const;
+
+            const SignPosition &getPosition() const;
+            void setPosition(const SignPosition &sPos);
 
         private:
             std::vector<int> variables;
+            SignPosition sPos;
 
             Variable vTrue() const;
             Variable vFalse() const;

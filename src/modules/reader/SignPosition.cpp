@@ -1,5 +1,7 @@
 #include "SignPosition.hpp"
 
+#include <sstream>
+
 using namespace tkom;
 
 SignPosition::SignPosition()
@@ -37,5 +39,11 @@ bool SignPosition::operator<=(const SignPosition &rhs) const {
 
 bool SignPosition::operator>=(const SignPosition &rhs) const {
     return !(*this < rhs);
+}
+
+const std::string SignPosition::toString() const {
+    std::stringstream ss;
+    ss << *this;
+    return ss.str();
 }
 
