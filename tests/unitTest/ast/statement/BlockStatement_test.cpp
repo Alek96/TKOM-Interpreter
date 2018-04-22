@@ -18,7 +18,7 @@ SCENARIO("Test for BlockStatement", "[ast][statement][BlockStatement]") {
         WHEN("Variable is added to block") {
             Variable var({1, 2, 3});
             std::string id = "variable";
-            block.addVariable(id, var);
+            block.addVariable(id, Variable(var));
             THEN("Method exist can find it") {
                 REQUIRE(block.existVariable(id));
             }

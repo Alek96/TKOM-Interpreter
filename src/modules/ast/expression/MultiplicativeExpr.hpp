@@ -23,9 +23,9 @@ namespace tkom {
 
             Variable calculate() const override;
 
-            void addMultiply(exprPtr baseMathExpr);
-            void addDivide(exprPtr baseMathExpr);
-            void addModulo(exprPtr baseMathExpr);
+            void addMultiply(exprPtr baseMathExpr, SignPosition position = SignPosition());
+            void addDivide(exprPtr baseMathExpr, SignPosition position = SignPosition());
+            void addModulo(exprPtr baseMathExpr, SignPosition position = SignPosition());
 
         private:
             std::list<exprPtr> baseMathExprs;

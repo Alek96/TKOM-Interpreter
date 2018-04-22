@@ -17,7 +17,7 @@ namespace tkom {
         Lexer& operator=(const Lexer&) = delete;
 
         void readNextToken();
-        const Token getToken() const;
+        const Token & getToken() const;
 
     private:
         Reader reader;

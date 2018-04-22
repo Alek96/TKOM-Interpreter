@@ -27,7 +27,7 @@ SCENARIO("Test for FunctionDef", "[ast][statement][FunctionDef]") {
             WHEN("Variable is added to functionBlock") {
                 std::string varName = "variable";
                 Variable var({1, 2, 3});
-                functionDef.getFunctionBlock().addVariable(varName, var);
+                functionDef.getFunctionBlock().addVariable(varName, Variable(var));
                 THEN("Method exist return true") {
                     REQUIRE(functionDef.getFunctionBlock().existVariable(varName));
                 }

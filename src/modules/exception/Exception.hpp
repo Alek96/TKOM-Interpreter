@@ -27,7 +27,13 @@ namespace tkom {
 
     class MathException : public Exception {
     public:
-        explicit MathException(std::string message) :
+        explicit MathException(const std::string message) :
+                Exception(message) {}
+    };
+
+    class BadToken : public Exception {
+    public:
+        explicit BadToken(const std::string message) :
                 Exception(message) {}
     };
 }

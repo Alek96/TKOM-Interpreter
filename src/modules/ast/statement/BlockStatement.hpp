@@ -20,18 +20,25 @@ namespace tkom {
             BlockStatement &operator=(BlockStatement &) = delete;
             BlockStatement &operator=(BlockStatement &&other) = default;
 
+            const BlockStatement *getParentBlock() const {
+                return parentBlock;
+            }
+
             void addInstruction(statBlockPtr statement) {
                 this->instructions.push_back(std::move(statement));
             }
 
-            void addVariable(const std::string &identifier, Variable &variable) {
-                variables.insert({identifier, std::move(variable)});
-            }
+//            Statement& getLastInstruction() {
+//                return *(*--instructions.end());
+//            }
+//            void addVariable(const std::string &identifier, Variable &variable) {
+//                variables.insert({identifier, std::move(variable)});
+//            }
             void addVariable(const std::string &identifier, Variable &&variable) {
                 variables.insert({identifier, std::move(variable)});
             }
 
-            Variable& findVariable(std::string &identifier) {
+            Variable& findVariable(const std::string &identifier) {
                 return variables.at(identifier);
             }
 

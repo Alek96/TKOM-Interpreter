@@ -3,6 +3,7 @@
 
 #include "modules/ast/Variable.hpp"
 #include "Expression.hpp"
+#include "ast/statement/Statement.hpp"
 #include <memory>
 
 namespace tkom {
@@ -12,11 +13,14 @@ namespace tkom {
         public:
             BaseMathExpr() = delete;
             explicit BaseMathExpr(Variable *literal, bool unaryMathOp = false);
+
             explicit BaseMathExpr(Variable& variable, bool unaryMathOp = false);
             explicit BaseMathExpr(Variable&& variable, bool unaryMathOp = false) = delete;
+
             explicit BaseMathExpr(Variable& variable, unsigned int index, bool unaryMathOp = false);
             explicit BaseMathExpr(Variable&& variable, unsigned int index, bool unaryMathOp = false) = delete;
-//        explicit BaseMathExpr(..., bool unaryMathOp = false)
+
+            explicit BaseMathExpr(std::unique_ptr<Statement> functionCall, bool unaryMathOp = false);
             explicit BaseMathExpr(std::unique_ptr<Expression> expr, bool unaryMathOp = false);
 
             BaseMathExpr(const BaseMathExpr &other) = delete;
@@ -30,8 +34,8 @@ namespace tkom {
             bool unaryMathOp = false;
             Variable *literal = nullptr;
             Variable *variable = nullptr;
-            //functionCall
-            std::unique_ptr<Expression> parenthLogicExpr;
+            std::unique_ptr<Statement> functionCall;
+            std::unique_ptr<Expression> parentLogicExpr;
             int index = -1;
         };
 

@@ -1,6 +1,7 @@
 #include "MathExpr.hpp"
 #include "exception/Exception.hpp"
 
+using namespace tkom;
 using namespace tkom::ast;
 
 MathExpr::MathExpr(exprPtr multiplicativeExpr) {
@@ -14,8 +15,10 @@ MathExpr::MathExpr(MathExpr &&rhs) noexcept
 Variable MathExpr::calculate() const {
     auto itExpr = multiplicativeExprs.begin();
     Variable var = itExpr->get()->calculate();
+    auto posIt = positions.begin();
 
     for (auto &&op : additiveOps) {
+        var.setPosition(*posIt++);
         ++itExpr;
         if (op == tkom::TokenType::Plus)
             var = var + itExpr->get()->calculate();
@@ -28,12 +31,14 @@ Variable MathExpr::calculate() const {
     return var;
 }
 
-void MathExpr::addPlus(exprPtr multiplicativeExpr) {
+void MathExpr::addPlus(exprPtr multiplicativeExpr, SignPosition position) {
     multiplicativeExprs.push_back(std::move(multiplicativeExpr));
     additiveOps.push_back(tkom::TokenType::Plus);
+    addPosition(position);
 }
 
-void MathExpr::addMinus(exprPtr multiplicativeExpr) {
+void MathExpr::addMinus(exprPtr multiplicativeExpr, SignPosition position) {
     multiplicativeExprs.push_back(std::move(multiplicativeExpr));
     additiveOps.push_back(tkom::TokenType::Minus);
+    addPosition(position);
 }

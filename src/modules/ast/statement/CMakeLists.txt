@@ -9,9 +9,6 @@ set(HEADER_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/WhileStatement.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/FunctionCall.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/PrintStatement.hpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/multiplicativeExpr.hpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/multiplicativeExpr.hpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/multiplicativeExpr.hpp
 
         PARENT_SCOPE
         )
@@ -19,10 +16,6 @@ set(HEADER_FILES
 set(SOURCE_FILES
         ${SOURCE_FILES}
 
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/Vector2.cpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/Vector2.cpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/Vector2.cpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/Vector2.cpp
         #        ${CMAKE_CURRENT_SOURCE_DIR}/Vector2.cpp
 
         PARENT_SCOPE

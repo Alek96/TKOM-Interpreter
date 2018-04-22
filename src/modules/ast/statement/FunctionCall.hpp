@@ -22,6 +22,10 @@ namespace tkom {
                 expressions.push_back(std::move(expr));
             }
 
+            const unsigned size() const {
+                return expressions.size();
+            }
+
             Return run() override {
                 std::list<Variable> var;
                 for (auto &&expression : expressions) {

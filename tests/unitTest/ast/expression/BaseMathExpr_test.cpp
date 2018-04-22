@@ -2,8 +2,11 @@
 #include "modules/ast/expression/BaseMathExpr.hpp"
 
 #include <iostream>
+#include "ast/statement/FunctionCall.hpp"
+#include "ast/statement/ReturnStatement.hpp"
 
 using namespace tkom::ast;
+using namespace Catch::Matchers;
 
 SCENARIO("Test for BaseMathExpr", "[ast][expr][BaseMathExpr]") {
     GIVEN("a Literal object") {
@@ -51,6 +54,17 @@ SCENARIO("Test for BaseMathExpr", "[ast][expr][BaseMathExpr]") {
                 REQUIRE(exp.calculate()[0] == -variable[index]);
             }
         }
+
+        WHEN("BaseMathExpr object is create from Variable (exception)") {
+            tkom::SignPosition sPos;
+            sPos.lineNumber = 2;
+            index = 3;
+            BaseMathExpr exp(variable, index);
+            exp.addPosition(sPos);
+            THEN("Calculate method return exception") {
+                REQUIRE_THROWS_WITH(exp.calculate(), Contains(sPos.toString()));
+            }
+        }
     }
     GIVEN("a LogicExpr object") {
         Variable variable({1, 2, 3});
@@ -66,6 +80,29 @@ SCENARIO("Test for BaseMathExpr", "[ast][expr][BaseMathExpr]") {
             BaseMathExpr exp(std::move(logicExpr), true);
             THEN("Calculate method return Literal") {
                 REQUIRE(exp.calculate() == -variable);
+            }
+        }
+    }
+    GIVEN("FunctionCall object") {
+        std::string functionId = "id";
+        FunctionDef functionDef(functionId);
+
+        Variable var({1, 2, 3});
+        functionDef.getFunctionBlock().addInstruction(
+                std::make_unique<ReturnStatement>(std::make_unique<BaseMathExpr>(var)));
+
+        auto functionCall = std::make_unique<FunctionCall>(functionDef);
+
+        WHEN("BaseMathExpr object is create from FunctionCall") {
+            BaseMathExpr exp(std::move(functionCall));
+            THEN("Calculate method return Literal") {
+                REQUIRE(exp.calculate() == var);
+            }
+        }
+        WHEN("BaseMathExpr object is create from FunctionCall with unaryMathOp") {
+            BaseMathExpr exp(std::move(functionCall), true);
+            THEN("Calculate method return Literal") {
+                REQUIRE(exp.calculate() == -var);
             }
         }
     }

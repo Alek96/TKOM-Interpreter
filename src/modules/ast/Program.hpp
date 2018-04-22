@@ -16,7 +16,7 @@ namespace tkom {
             Program() = default;
 
             void addFunction(std::unique_ptr<FunctionDef> function) {
-                functions.insert(function->getIdentifier, std::move(function) );
+                functions.insert({function->getIdentifier(), std::move(function)});
             }
 
             FunctionDef &findFunction(std::string &identifier) {
@@ -33,8 +33,8 @@ namespace tkom {
 
             void run() {
                 for (auto &&function : functions) {
-                    if (function.getIdentifier() == "main") {
-                        function.run();
+                    if (function.second->getIdentifier() == "main") {
+                        function.second->run();
                         return;
                     }
                 }

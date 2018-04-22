@@ -13,29 +13,35 @@ BaseMathExpr::BaseMathExpr(Variable &variable, bool unaryMathOp)
 }
 
 BaseMathExpr::BaseMathExpr(Variable &variable, unsigned int index, bool unaryMathOp)
-        : BaseMathExpr(new Variable({variable[index]}), unaryMathOp) {
+        : unaryMathOp(unaryMathOp),
+          variable(&variable),
+          index(index) {
 }
+
+BaseMathExpr::BaseMathExpr(std::unique_ptr<Statement> functionCall, bool unaryMathOp)
+        : unaryMathOp(unaryMathOp),
+          functionCall(std::move(functionCall)) {
+}
+
 
 BaseMathExpr::BaseMathExpr(std::unique_ptr<Expression> expr, bool unaryMathOp)
         : unaryMathOp(unaryMathOp),
-          parenthLogicExpr(std::move(expr)) {
+          parentLogicExpr(std::move(expr)) {
 }
 
 BaseMathExpr::BaseMathExpr(BaseMathExpr &&other) noexcept
         : unaryMathOp(other.unaryMathOp),
           literal(other.literal),
           variable(other.variable),
-          parenthLogicExpr(std::move(other.parenthLogicExpr)) {
+          functionCall(std::move(other.functionCall)),
+          parentLogicExpr(std::move(other.parentLogicExpr)) {
 
     other.unaryMathOp = false;
     other.literal = nullptr;
-    //functionCall
-//    other.parenthLogicExpr = nullptr;
 }
 
 BaseMathExpr::~BaseMathExpr() {
     delete literal;
-//    delete parenthLogicExpr;
 }
 
 Variable BaseMathExpr::calculate() const {
@@ -44,12 +50,17 @@ Variable BaseMathExpr::calculate() const {
         currVar = *literal;
     } else if (variable) {
         if (index >= 0) {
+            if (!positions.empty()) {
+                variable->setPosition(positions.front());
+            }
             currVar = Variable({variable->at(static_cast<unsigned int>(index))});
         } else {
             currVar = *variable;
         }
-    } else if (parenthLogicExpr) {
-        currVar = parenthLogicExpr->calculate();
+    } else if (functionCall) {
+        currVar = functionCall->run().variable;
+    } else if (parentLogicExpr) {
+        currVar = parentLogicExpr->calculate();
     }
 
     if (unaryMathOp) {

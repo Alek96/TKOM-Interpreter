@@ -6,6 +6,7 @@
 #include "ast/expression/BaseMathExpr.hpp"
 
 using namespace tkom::ast;
+using namespace Catch::Matchers;
 
 SCENARIO("Test for AssignStatement", "[ast][statement][AssignStatement]") {
     GIVEN("AssignStatement created from Variable var1 and Expression created from var2") {
@@ -41,12 +42,24 @@ SCENARIO("Test for AssignStatement", "[ast][statement][AssignStatement]") {
             THEN("Run method coled and Exception appears") {
                 REQUIRE_THROWS(assign.run());
             }
+            THEN("Run method coled and Exception appears with position") {
+                tkom::SignPosition sPos;
+                sPos.lineNumber = 2;
+                assign.setPosition(sPos);
+                REQUIRE_THROWS_WITH(assign.run(), Contains(sPos.toString()));
+            }
         }
         WHEN("var1 is 2-dimensional and var2 is 1-dimensional, but index is 2") {
             var1 = Variable({1, 2});
             var2 = Variable({1});
             THEN("Run method coled and Exception appears") {
                 REQUIRE_THROWS(assign.run());
+            }
+            THEN("Run method coled and Exception appears with position") {
+                tkom::SignPosition sPos;
+                sPos.lineNumber = 2;
+                assign.setPosition(sPos);
+                REQUIRE_THROWS_WITH(assign.run(), Contains(sPos.toString()));
             }
         }
     }

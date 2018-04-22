@@ -13,7 +13,7 @@ namespace tkom {
 
         class FunctionDef {
         public:
-            explicit FunctionDef(std::string &identifier) : identifier(identifier) {}
+            explicit FunctionDef(const std::string identifier) : identifier(std::move(identifier)) {}
 
             void addParameter(const std::string &identifier) {
                 parameters.push_back(identifier);
@@ -30,7 +30,7 @@ namespace tkom {
                 return functionBlock;
             }
 
-            Return run(std::list<Variable> &var) {
+            Return run(std::list<Variable> var = std::list<Variable>()) {
                 auto itParameters = parameters.begin();
                 auto itVar = var.begin();
 

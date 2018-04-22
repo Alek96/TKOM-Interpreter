@@ -1,6 +1,7 @@
 #include "Lexer.hpp"
 #include <cctype>
 #include <iostream>
+#include <functional>
 
 #include "Token/TokenTypeDefiner.hpp"
 #include "exception/Exception.hpp"
@@ -37,7 +38,7 @@ void Lexer::readNextToken() {
         throw InvalidTokenException(token);
 }
 
-const Token Lexer::getToken() const {
+const Token &Lexer::getToken() const {
     return token;
 }
 
@@ -98,7 +99,7 @@ void Lexer::defineTokenStringLiteral() {
 
 void Lexer::defineTokenWithSpecialCharacter() {
 
-    auto readNextSign = [&](const char sign, TokenType exist, TokenType notExist) {
+    static auto readNextSign = [&](const char sign, TokenType exist, TokenType notExist) {
         reader.get();
         if (reader.peek() == sign) {
             reader.get();
@@ -108,37 +109,21 @@ void Lexer::defineTokenWithSpecialCharacter() {
         }
     };
 
-    switch (reader.peek()) {
-        case '=': {
-            readNextSign('=', TokenType::Equality, TokenType::Assignment);
-            break;
-        }
-        case '<': {
-            readNextSign('=', TokenType::LessOrEqual, TokenType::Less);
-            break;
-        }
-        case '>': {
-            readNextSign('=', TokenType::GreaterOrEqual, TokenType::Greater);
-            break;
-        }
-        case '!': {
-            readNextSign('=', TokenType::Inequality, TokenType::Negation);
-            break;
-        }
-        case '&': {
-            readNextSign('&', TokenType::And, TokenType::Invalid);
-            break;
-        }
-        case '|': {
-            readNextSign('|', TokenType::Or, TokenType::Invalid);
-            break;
-        }
-        default: {
-            token.type = TokenTypeDefiner::find(reader.peek());
-            if (token.type == TokenType::Invalid)
-                token.value = reader.peek();
-            reader.get();
-            break;
-        }
+    static std::unordered_map<char, std::function<void()>> signs = {
+            {'=', [&]() { readNextSign('=', TokenType::Equality, TokenType::Assignment); }},
+            {'<', [&]() { readNextSign('=', TokenType::LessOrEqual, TokenType::Less); }},
+            {'>', [&]() { readNextSign('=', TokenType::GreaterOrEqual, TokenType::Greater); }},
+            {'!', [&]() { readNextSign('=', TokenType::Inequality, TokenType::Negation); }},
+            {'&', [&]() { readNextSign('&', TokenType::And, TokenType::Invalid); }},
+            {'|', [&]() { readNextSign('|', TokenType::Or, TokenType::Invalid); }}
+    };
+
+    if (signs.count(reader.peek())) {
+        signs.at(reader.peek())();
+    } else {
+        token.type = TokenTypeDefiner::find(reader.peek());
+        if (token.type == TokenType::Invalid)
+            token.value = reader.peek();
+        reader.get();
     }
 }

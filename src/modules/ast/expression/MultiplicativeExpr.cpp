@@ -1,6 +1,7 @@
 #include "MultiplicativeExpr.hpp"
 #include "exception/Exception.hpp"
 
+using namespace tkom;
 using namespace tkom::ast;
 
 MultiplicativeExpr::MultiplicativeExpr(exprPtr baseMathExpr) {
@@ -14,8 +15,11 @@ MultiplicativeExpr::MultiplicativeExpr(MultiplicativeExpr &&rhs) noexcept
 Variable MultiplicativeExpr::calculate() const {
     auto itExpr = baseMathExprs.begin();
     Variable var = itExpr->get()->calculate();
+    auto posIt = positions.begin();
 
     for (auto &&op : multiplicativeOps) {
+        var.setPosition(*posIt++);
+
         ++itExpr;
         if (op == tkom::TokenType::Multiply)
             var = var * itExpr->get()->calculate();
@@ -30,17 +34,20 @@ Variable MultiplicativeExpr::calculate() const {
     return var;
 }
 
-void MultiplicativeExpr::addMultiply(exprPtr baseMathExpr) {
+void MultiplicativeExpr::addMultiply(exprPtr baseMathExpr, SignPosition position) {
     baseMathExprs.push_back(std::move(baseMathExpr));
     multiplicativeOps.push_back(tkom::TokenType::Multiply);
+    addPosition(position);
 }
 
-void MultiplicativeExpr::addDivide(exprPtr baseMathExpr) {
+void MultiplicativeExpr::addDivide(exprPtr baseMathExpr, SignPosition position) {
     baseMathExprs.push_back(std::move(baseMathExpr));
     multiplicativeOps.push_back(tkom::TokenType::Divide);
+    addPosition(position);
 }
 
-void MultiplicativeExpr::addModulo(exprPtr baseMathExpr) {
+void MultiplicativeExpr::addModulo(exprPtr baseMathExpr, SignPosition position) {
     baseMathExprs.push_back(std::move(baseMathExpr));
     multiplicativeOps.push_back(tkom::TokenType::Modulo);
+    addPosition(position);
 }

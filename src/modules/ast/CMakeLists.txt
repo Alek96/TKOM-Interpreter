@@ -8,13 +8,6 @@ set(HEADER_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/FunctionDef.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Variable.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Return.hpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/multiplicativeExpr.hpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/multiplicativeExpr.hpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/multiplicativeExpr.hpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/multiplicativeExpr.hpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/multiplicativeExpr.hpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/multiplicativeExpr.hpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/multiplicativeExpr.hpp
 
         PARENT_SCOPE
         )
@@ -23,13 +16,6 @@ set(SOURCE_FILES
         ${SOURCE_FILES}
 
         ${CMAKE_CURRENT_SOURCE_DIR}/Variable.cpp
-
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/Vector2.cpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/Vector2.cpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/Vector2.cpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/Vector2.cpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/Vector2.cpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/Vector2.cpp
 
         PARENT_SCOPE
         )

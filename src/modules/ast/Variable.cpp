@@ -95,7 +95,7 @@ Variable Variable::operator-(const Variable &rhs) const {
             var[i] -= rhs.variables[i];
         }
     } else {
-        throw MathException("Can't compare "
+        throw MathException("Can't subtract "
                             + std::to_string(variables.size()) + "-dimension vector and "
                             + std::to_string(rhs.variables.size()) + "-dimension vector "
                             + (sPos != SignPosition() ? "at line: " + sPos.toString() : ""));

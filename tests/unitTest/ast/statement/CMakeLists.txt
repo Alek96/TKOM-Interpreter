@@ -7,7 +7,5 @@ set(SOURCE_FILES_TEST
         ${CMAKE_CURRENT_SOURCE_DIR}/WhileStatement_test.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/PrintStatement_test.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/FunctionCall_test.cpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/AssignStatement.cpp
-        #        ${CMAKE_CURRENT_SOURCE_DIR}/AssignStatement.cpp
         PARENT_SCOPE
         )

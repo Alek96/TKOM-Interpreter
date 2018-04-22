@@ -21,8 +21,8 @@ namespace tkom {
 
             Variable calculate() const override;
 
-            void addPlus(exprPtr multiplicativeExpr);
-            void addMinus(exprPtr multiplicativeExpr);
+            void addPlus(exprPtr multiplicativeExpr, SignPosition position = SignPosition());
+            void addMinus(exprPtr multiplicativeExpr, SignPosition position = SignPosition());
 
         private:
             std::list<exprPtr> multiplicativeExprs;
