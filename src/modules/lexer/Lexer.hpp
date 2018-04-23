@@ -28,6 +28,7 @@ namespace tkom {
         void defineTokenWithSpecialCharacter();
 
         void defineTokenStringLiteral();
+        void acceptSign(char sign, TokenType exist, TokenType notExist);
     };
 }
 

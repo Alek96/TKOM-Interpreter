@@ -14,6 +14,8 @@
 
 #include "ast/expression/LogicExpr.hpp"
 
+#include <iostream>
+
 using namespace tkom;
 using namespace tkom::ast;
 
@@ -21,9 +23,17 @@ Parser::Parser(std::unique_ptr<Lexer> lexer_)
         : lexer(std::move(lexer_)) {
 }
 
+void Parser::setLexer(std::unique_ptr<Lexer> lexer) {
+    Parser::lexer = std::move(lexer);
+}
+
 void Parser::parse() {
     lexer->readNextToken();
     programParse();
+}
+
+ast::Return Parser::run() {
+    return program.run();
 }
 
 bool Parser::accept(const TokenType type, const std::function<void()> ifTrue) {
@@ -91,16 +101,7 @@ void Parser::parametersParse(ast::FunctionDef &function) {
                 function.addParameter(lexer->getToken().value);
             });
         }
-//        if (lexer->getToken().type != TokenType::Comma && lexer->getToken().type != TokenType::ParenthesisClose) {
-//            throwExpectedTokens({TokenType::Comma,
-//                                 TokenType::ParenthesisClose});
-//        }
     }
-//    else if (lexer->getToken().type != TokenType::ParenthesisClose) {
-//        throwExpectedTokens({TokenType::Identifier,
-//                             TokenType::ParenthesisClose});
-//    }
-
     acceptOrThrow(TokenType::ParenthesisClose);
 }
 
@@ -108,7 +109,7 @@ void Parser::blockStatementParse(ast::BlockStatement &newBlock) {
     block = &newBlock;
     Token token;
 
-    static std::unordered_map<TokenType, std::function<void()>> statement = {
+    std::unordered_map<TokenType, std::function<void()>> statement = {
             {TokenType::Var,              [&]() {
                 block->addInstruction(std::move(initStatementParse()));
             }},
@@ -207,11 +208,11 @@ std::unique_ptr<ast::Statement> Parser::assignStatementOrFunctionCallParse(Token
 std::unique_ptr<ast::Statement> Parser::assignStatementParse(Variable &variable) {
     std::unique_ptr<AssignStatement> assignStatement;
 
-    auto AssignmentLogicExpr = [&]() {
+    std::function<std::unique_ptr<Expression>()> AssignmentLogicExpr = [&]() {
         acceptOrThrow(TokenType::Assignment);
-        auto logicExpr = logicExprParse();
+        std::unique_ptr<Expression> logicExpr(logicExprParse());
         acceptOrThrow(TokenType::Semicolon);
-        return logicExpr;
+        return std::move(logicExpr);
     };
 
     if (accept(TokenType::BracketOpen)) {
@@ -277,12 +278,6 @@ std::unique_ptr<ast::Statement> Parser::ifStatementParse() {
         elseBlock = std::make_unique<BlockStatement>(block);
         blockStatementParse(*elseBlock);
     }
-//    else if (lexer->getToken().type != TokenType::Semicolon) {
-//        throwExpectedTokens({TokenType::Else,
-//                             TokenType::Semicolon});
-//    }
-
-    acceptOrThrow(TokenType::Semicolon);
 
     return std::make_unique<IfStatement>(std::move(expression),
                                          std::move(ifBlock),
@@ -290,10 +285,12 @@ std::unique_ptr<ast::Statement> Parser::ifStatementParse() {
 }
 
 std::unique_ptr<ast::Statement> Parser::whileStatementParse() {
+    std::unique_ptr<WhileStatement> whileStatement;
     std::unique_ptr<Expression> expression;
     std::unique_ptr<BlockStatement> whileBlock;
+    Token token;
 
-    acceptOrThrow(TokenType::ParenthesisOpen);
+    acceptOrThrow(TokenType::ParenthesisOpen, [&]() { token = lexer->getToken(); });
     expression = std::move(logicExprParse());
     acceptOrThrow(TokenType::ParenthesisClose);
 
@@ -301,10 +298,10 @@ std::unique_ptr<ast::Statement> Parser::whileStatementParse() {
     whileBlock = std::make_unique<BlockStatement>(block);
     blockStatementParse(*whileBlock);
 
-    acceptOrThrow(TokenType::Semicolon);
-
-    return std::make_unique<WhileStatement>(std::move(expression),
-                                            std::move(whileBlock));
+    whileStatement = std::make_unique<WhileStatement>(std::move(expression),
+                                                      std::move(whileBlock));
+    whileStatement->setPosition(token.position);
+    return std::move(whileStatement);
 }
 
 std::unique_ptr<ast::Statement> Parser::returnStatementParse() {
@@ -338,38 +335,38 @@ std::unique_ptr<ast::Statement> Parser::printStatementParse() {
 
 
 std::unique_ptr<ast::Expression> Parser::logicExprParse() {
-    std::unique_ptr<LogicExpr> logicExpr = std::make_unique<LogicExpr>(andExprParser());
+    std::unique_ptr<LogicExpr> logicExpr = std::make_unique<LogicExpr>(std::move(andExprParser()));
 
     while (accept(TokenType::Or)) {
-        logicExpr->addOr(andExprParser());
+        logicExpr->addOr(std::move(andExprParser()));
     }
 
     return std::move(logicExpr);
 }
 
 std::unique_ptr<ast::Expression> Parser::andExprParser() {
-    std::unique_ptr<AndExpr> andExpr = std::make_unique<AndExpr>(relationalExprParser());
+    std::unique_ptr<AndExpr> andExpr = std::make_unique<AndExpr>(std::move(relationalExprParser()));
 
     while (accept(TokenType::And)) {
-        andExpr->addAnd(relationalExprParser());
+        andExpr->addAnd(std::move(relationalExprParser()));
     }
 
     return std::move(andExpr);
 }
 
 std::unique_ptr<ast::Expression> Parser::relationalExprParser() {
-    std::unique_ptr<RelationalExpr> relationalExpr = std::make_unique<RelationalExpr>(baseLogicParser());
+    std::unique_ptr<RelationalExpr> relationalExpr = std::make_unique<RelationalExpr>(std::move(baseLogicParser()));
 
-    static std::unordered_map<TokenType, std::function<void()>> relationOp = {
-            {TokenType::Equality,       [&]() { relationalExpr->addEquality(baseLogicParser()); }},
-            {TokenType::Inequality,     [&]() { relationalExpr->addInequality(baseLogicParser()); }},
-            {TokenType::Less,           [&]() { relationalExpr->addLess(baseLogicParser()); }},
-            {TokenType::Greater,        [&]() { relationalExpr->addGreater(baseLogicParser()); }},
-            {TokenType::LessOrEqual,    [&]() { relationalExpr->addLessOrEqual(baseLogicParser()); }},
-            {TokenType::GreaterOrEqual, [&]() { relationalExpr->addGreaterOrEqual(baseLogicParser()); }}
+    std::unordered_map<TokenType, std::function<void()>> relationOp = {
+            {TokenType::Equality,       [&]() { relationalExpr->addEquality(std::move(baseLogicParser())); }},
+            {TokenType::Inequality,     [&]() { relationalExpr->addInequality(std::move(baseLogicParser())); }},
+            {TokenType::Less,           [&]() { relationalExpr->addLess(std::move(baseLogicParser())); }},
+            {TokenType::Greater,        [&]() { relationalExpr->addGreater(std::move(baseLogicParser())); }},
+            {TokenType::LessOrEqual,    [&]() { relationalExpr->addLessOrEqual(std::move(baseLogicParser())); }},
+            {TokenType::GreaterOrEqual, [&]() { relationalExpr->addGreaterOrEqual(std::move(baseLogicParser())); }}
     };
 
-    while (relationOp.count(lexer->getToken().type)) {
+    if (relationOp.count(lexer->getToken().type)) {
         TokenType tokenType = lexer->getToken().type;
         lexer->readNextToken();
         relationOp.at(tokenType)();
@@ -380,19 +377,19 @@ std::unique_ptr<ast::Expression> Parser::relationalExprParser() {
 
 std::unique_ptr<ast::Expression> Parser::baseLogicParser() {
     if (accept(TokenType::Negation)) {
-        return std::make_unique<BaseLogicExpr>(mathExprParser(), true);
+        return std::make_unique<BaseLogicExpr>(std::move(mathExprParser()), true);
     } else {
-        return std::make_unique<BaseLogicExpr>(mathExprParser());
+        return std::make_unique<BaseLogicExpr>(std::move(mathExprParser()));
     }
 }
 
 std::unique_ptr<ast::Expression> Parser::mathExprParser() {
-    std::unique_ptr<MathExpr> mathExpr = std::make_unique<MathExpr>(multiplicativeExprParser());
+    std::unique_ptr<MathExpr> mathExpr = std::make_unique<MathExpr>(std::move(multiplicativeExprParser()));
     Token token;
 
-    static std::unordered_map<TokenType, std::function<void()>> additiveOp = {
-            {TokenType::Plus,  [&]() { mathExpr->addPlus(multiplicativeExprParser(), token.position); }},
-            {TokenType::Minus, [&]() { mathExpr->addMinus(multiplicativeExprParser(), token.position); }}
+    std::unordered_map<TokenType, std::function<void()>> additiveOp = {
+            {TokenType::Plus,  [&]() { mathExpr->addPlus(std::move(multiplicativeExprParser()), token.position); }},
+            {TokenType::Minus, [&]() { mathExpr->addMinus(std::move(multiplicativeExprParser()), token.position); }}
     };
 
     while (additiveOp.count(lexer->getToken().type)) {
@@ -415,13 +412,20 @@ std::unique_ptr<ast::Expression> Parser::mathExprParser() {
 }
 
 std::unique_ptr<ast::Expression> Parser::multiplicativeExprParser() {
-    std::unique_ptr<MultiplicativeExpr> multiplicativeExpr = std::make_unique<MultiplicativeExpr>(baseMathExprParser());
+    std::unique_ptr<MultiplicativeExpr> multiplicativeExpr = std::make_unique<MultiplicativeExpr>(
+            std::move(baseMathExprParser()));
     Token token;
 
-    static std::unordered_map<TokenType, std::function<void()>> multiplicativeOp = {
-            {TokenType::Multiply, [&]() { multiplicativeExpr->addMultiply(baseMathExprParser(), token.position); }},
-            {TokenType::Divide,   [&]() { multiplicativeExpr->addDivide(baseMathExprParser(), token.position); }},
-            {TokenType::Modulo,   [&]() { multiplicativeExpr->addModulo(baseMathExprParser(), token.position); }}
+    std::unordered_map<TokenType, std::function<void()>> multiplicativeOp = {
+            {TokenType::Multiply, [&]() {
+                multiplicativeExpr->addMultiply(std::move(baseMathExprParser()), token.position);
+            }},
+            {TokenType::Divide,   [&]() {
+                multiplicativeExpr->addDivide(std::move(baseMathExprParser()), token.position);
+            }},
+            {TokenType::Modulo,   [&]() {
+                multiplicativeExpr->addModulo(std::move(baseMathExprParser()), token.position);
+            }}
     };
 
     while (multiplicativeOp.count(lexer->getToken().type)) {
@@ -457,12 +461,12 @@ std::unique_ptr<ast::Expression> Parser::baseMathExprParser() {
         //new vector
         baseMathExpr = std::make_unique<BaseMathExpr>(new Variable(vectorLiteralParse()), unaryMathOp);
     } else if (accept(TokenType::ParenthesisOpen)) {
-        baseMathExpr = std::make_unique<BaseMathExpr>(logicExprParse(), unaryMathOp);
+        baseMathExpr = std::make_unique<BaseMathExpr>(std::move(logicExprParse()), unaryMathOp);
         acceptOrThrow(TokenType::ParenthesisClose);
     } else if (accept(TokenType::Identifier)) {
         if (accept(TokenType::ParenthesisOpen)) {
             //funCall
-            baseMathExpr = std::make_unique<BaseMathExpr>(functionCallParse(tokenId), unaryMathOp);
+            baseMathExpr = std::make_unique<BaseMathExpr>(std::move(functionCallParse(tokenId)), unaryMathOp);
         } else {
             //variable
             existVariable(tokenId);

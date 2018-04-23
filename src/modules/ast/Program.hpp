@@ -31,11 +31,10 @@ namespace tkom {
                 return functions.count(identifier);
             }
 
-            void run() {
+            Return run() {
                 for (auto &&function : functions) {
                     if (function.second->getIdentifier() == "main") {
-                        function.second->run();
-                        return;
+                        return function.second->run();
                     }
                 }
                 throw Exception("Program don't contain main function");

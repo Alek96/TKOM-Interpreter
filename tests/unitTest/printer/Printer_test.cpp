@@ -1,14 +1,27 @@
 #include <catch.hpp>
 #include "printer/Printer.hpp"
 #include <sstream>
+#include <iostream>
 
 using namespace tkom;
+
+struct setPrinter {
+    explicit setPrinter(std::stringstream& ss) {
+        tkom::Printer::instance().setOutputStream(&ss);
+        tkom::Printer::instance().setEnableOutput(true);
+    }
+    ~setPrinter() {
+        tkom::Printer::instance().setOutputStream(&(std::cout));
+        tkom::Printer::instance().setEnableOutput(false);
+    }
+};
 
 TEST_CASE("test for Printer", "[Printer]") {
 
     GIVEN("Output stream for Printer") {
-        std::ostringstream oss;
-        Printer::instance().setOutputStream(&oss);
+        std::stringstream oss;
+        setPrinter setPrinter(oss);
+
         WHEN("Print message is sent") {
             std::string message = "Normal text";
             Printer::instance().print(message);

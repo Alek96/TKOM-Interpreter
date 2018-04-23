@@ -8,6 +8,7 @@
 
 #include "ast/statement/Statement.hpp"
 #include "ast/expression/Expression.hpp"
+#include "ast/Return.hpp"
 
 namespace tkom {
 
@@ -15,10 +16,12 @@ namespace tkom {
     public:
         explicit Parser(std::unique_ptr<Lexer> lexer);
 
+        void setLexer(std::unique_ptr<Lexer> lexer);
+
         ~Parser() = default;
 
         void parse();
-//        void run();
+        ast::Return run();
 
     private:
         std::unique_ptr<Lexer> lexer;

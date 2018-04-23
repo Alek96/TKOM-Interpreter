@@ -18,11 +18,15 @@ namespace tkom {
                       block(std::move(block)) {
             }
 
+            void setPosition(const SignPosition &sPos) {
+                WhileStatement::sPos = sPos;
+            }
+
             Return run() override {
                 Return ret;
                 unsigned int time = 1000 * 1000 * 1;
 
-                while (expression->calculate() && time--) {
+                while (expression->calculate() && --time > 0) {
                     ret = block->run();
 
                     switch (ret.type) {
@@ -36,8 +40,9 @@ namespace tkom {
                             continue;
                     }
                 }
-                if (!time)
-                    throw Exception("Run time");
+                if (time <= 0)
+                    throw Exception("Time out in WhileStatement "
+                                    + (sPos != SignPosition() ? "at line: " + sPos.toString() : ""));
                 else {
                     return Return(Return::_none);
                 }
@@ -46,8 +51,8 @@ namespace tkom {
         private:
             std::unique_ptr<Expression> expression;
             std::unique_ptr<BlockStatement> block;
+            SignPosition sPos;
         };
-
     }
 }
 

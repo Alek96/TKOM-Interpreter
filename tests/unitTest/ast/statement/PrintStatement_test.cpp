@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <sstream>
+#include <iostream>
 #include "ast/Variable.hpp"
 #include "ast/expression/BaseMathExpr.hpp"
 #include "ast/Return.hpp"
@@ -10,11 +11,22 @@
 
 using namespace tkom::ast;
 
+struct setPrinter {
+    explicit setPrinter(std::stringstream& ss) {
+        tkom::Printer::instance().setOutputStream(&ss);
+        tkom::Printer::instance().setEnableOutput(true);
+    }
+    ~setPrinter() {
+        tkom::Printer::instance().setOutputStream(&(std::cout));
+        tkom::Printer::instance().setEnableOutput(false);
+    }
+};
+
 SCENARIO("Test for PrintStatement", "[ast][statement][PrintStatement]") {
     GIVEN("PrintStatement object") {
         PrintStatement printStatement;
         std::stringstream ss;
-        tkom::Printer::instance().setOutputStream(&ss);
+        setPrinter setPrinter1(ss);
 
         WHEN("Expression is added") {
             Variable var({1,2,3});

@@ -98,25 +98,17 @@ void Lexer::defineTokenStringLiteral() {
 }
 
 void Lexer::defineTokenWithSpecialCharacter() {
-
-    static auto readNextSign = [&](const char sign, TokenType exist, TokenType notExist) {
-        reader.get();
-        if (reader.peek() == sign) {
-            reader.get();
-            token.type = exist;
-        } else {
-            token.type = notExist;
-        }
+    //dlaczego static sie j****
+    std::unordered_map<char, std::function<void()>> signs = {
+            {'=', [&]() { acceptSign('=', TokenType::Equality, TokenType::Assignment); }},
+            {'<', [&]() { acceptSign('=', TokenType::LessOrEqual, TokenType::Less); }},
+            {'>', [&]() { acceptSign('=', TokenType::GreaterOrEqual, TokenType::Greater); }},
+            {'!', [&]() { acceptSign('=', TokenType::Inequality, TokenType::Negation); }},
+            {'&', [&]() { acceptSign('&', TokenType::And, TokenType::Invalid); }},
+            {'|', [&]() { acceptSign('|', TokenType::Or, TokenType::Invalid); }}
     };
 
-    static std::unordered_map<char, std::function<void()>> signs = {
-            {'=', [&]() { readNextSign('=', TokenType::Equality, TokenType::Assignment); }},
-            {'<', [&]() { readNextSign('=', TokenType::LessOrEqual, TokenType::Less); }},
-            {'>', [&]() { readNextSign('=', TokenType::GreaterOrEqual, TokenType::Greater); }},
-            {'!', [&]() { readNextSign('=', TokenType::Inequality, TokenType::Negation); }},
-            {'&', [&]() { readNextSign('&', TokenType::And, TokenType::Invalid); }},
-            {'|', [&]() { readNextSign('|', TokenType::Or, TokenType::Invalid); }}
-    };
+    token.value.push_back(reader.peek());
 
     if (signs.count(reader.peek())) {
         signs.at(reader.peek())();
@@ -127,3 +119,15 @@ void Lexer::defineTokenWithSpecialCharacter() {
         reader.get();
     }
 }
+
+void Lexer::acceptSign(const char sign, const TokenType exist, const TokenType notExist) {
+    reader.get();
+    if (!reader.eof() && reader.peek() == sign) {
+        reader.get();
+        token.type = exist;
+    } else {
+        token.type = notExist;
+    }
+}
+
+
