@@ -1,0 +1,11 @@
+
+function main() {
+  print(vec(1,2)," to ", convertFrom2dTo3d(vec(1,2)) );
+  print(vec(1,2,3)," to ", convertFrom3dTo2d(vec(1,2,3)) );
+
+  print(vec(1,2)," X ",vec(1,2), " = ", crossProduct2(vec(1,2),vec(1,2)) );
+  print(vec(1,2,3)," x ",vec(1,2,3), " = ", crossProduct3(vec(1,2,3),vec(1,2,3)) );
+
+  print(vec(1,2)," o ",vec(1,2), " = ", scalarProduct2(vec(1,2),vec(1,2)) );
+  print(vec(1,2,3)," o ",vec(1,2,3), " = ", scalarProduct3(vec(1,2,3),vec(1,2,3)) );
+}

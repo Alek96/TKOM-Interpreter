@@ -34,7 +34,7 @@ namespace tkom {
         std::ostream* errorOutput;
         unsigned int shiftMultiplier;
         unsigned int labelShift;
-        bool enableOutput = true;
+        bool enableOutput = false;
 
         const std::string addLabel(const std::string& message);
         std::string printToString(const std::string &message, const unsigned int &shift = 0);

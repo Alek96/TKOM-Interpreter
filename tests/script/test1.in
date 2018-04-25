@@ -1,0 +1,22 @@
+function fun(a) {
+  print(a);
+  return 3;
+}
+
+function main() {
+  fun(1);
+  fun(fun(2));
+  print(vec(1,2));
+  print(vec(1,2,3));
+
+  var a = 0;
+  if(a == 0) {
+    print("a= ", a);
+  }
+
+  var b = a;
+  while(b < 10) {
+    b = b + 1;
+  }
+  print("b= ", b);
+}

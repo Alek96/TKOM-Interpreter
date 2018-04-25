@@ -22,7 +22,7 @@ SCENARIO("Test for BlockStatement", "[ast][statement][BlockStatement]") {
             THEN("Method exist can find it") {
                 REQUIRE(block.existVariable(id));
             }
-            THEN("We modify it") {
+            THEN("We can modify it") {
                 Variable modVar({3, 2, 1});
                 block.findVariable(id) = modVar;
                 REQUIRE(block.findVariable(id) == modVar);
@@ -31,6 +31,17 @@ SCENARIO("Test for BlockStatement", "[ast][statement][BlockStatement]") {
                 block.eraseVariable(id);
                 THEN("Method exist can't find it") {
                     REQUIRE_FALSE(block.existVariable(id));
+                }
+            }
+            THEN("New block is created from  previous") {
+                BlockStatement newBlock(&block);
+                THEN("Method exist can find variable") {
+                    REQUIRE(block.existVariable(id));
+                }
+                THEN("We can modify it") {
+                    Variable modVar({3, 2, 1});
+                    block.findVariable(id) = modVar;
+                    REQUIRE(block.findVariable(id) == modVar);
                 }
             }
         }

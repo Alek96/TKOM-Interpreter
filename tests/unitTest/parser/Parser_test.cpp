@@ -1337,7 +1337,7 @@ SCENARIO("BaseMathExpr definition", "[Parser]") {
         }
         THEN("Exception appears - 15") {
             stream << "function func() {"
-                      "return f()"
+                      "return f"
                       "}";
             REQUIRE_THROWS(parser.parse());
         }

@@ -31,8 +31,9 @@ namespace tkom {
                 for (auto &&expression : expressions) {
                     var.push_back(expression->calculate());
                 }
-
-                return functionDef.run(var);
+                Return ret = functionDef.run(var);
+                ret.type = Return::_none;
+                return ret;
             }
 
         private:

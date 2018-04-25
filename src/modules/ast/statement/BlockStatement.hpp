@@ -6,6 +6,7 @@
 #include <string>
 #include "Statement.hpp"
 #include "modules/ast/Variable.hpp"
+#include "exception/Exception.hpp"
 
 namespace tkom {
     namespace ast {
@@ -14,10 +15,12 @@ namespace tkom {
             using statBlockPtr = std::unique_ptr<Statement>;
 
         public:
-            explicit BlockStatement(const BlockStatement *parentBlock = nullptr) : parentBlock(parentBlock) {}
+            explicit BlockStatement(BlockStatement *parentBlock = nullptr) : parentBlock(parentBlock) {}
+
             BlockStatement(const BlockStatement &) = delete;
 
             BlockStatement &operator=(BlockStatement &) = delete;
+
             BlockStatement &operator=(BlockStatement &&other) = default;
 
             const BlockStatement *getParentBlock() const {
@@ -38,8 +41,14 @@ namespace tkom {
                 variables.insert({identifier, std::move(variable)});
             }
 
-            Variable& findVariable(const std::string &identifier) {
-                return variables.at(identifier);
+            Variable &findVariable(const std::string &identifier, Token tokenId = Token()) {
+                if (variables.count(identifier)) {
+                    return variables.at(identifier);
+                } else if(parentBlock){
+                    return parentBlock->findVariable(identifier);
+                }
+                throw Exception("Variable not found "
+                                " at line: " + tokenId.position.toString());
             }
 
             void eraseVariable(const std::string &identifier) {
@@ -61,7 +70,7 @@ namespace tkom {
             };
 
         private:
-            const BlockStatement *parentBlock;
+            BlockStatement *parentBlock;
             std::list<statBlockPtr> instructions;
             std::unordered_map<std::string, Variable> variables;
         };

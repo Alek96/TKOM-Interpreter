@@ -13,9 +13,6 @@ namespace tkom {
     public:
         explicit Lexer(std::istream& istream);
 
-        Lexer(const Lexer&) = delete;
-        Lexer& operator=(const Lexer&) = delete;
-
         void readNextToken();
         const Token & getToken() const;
 

@@ -14,9 +14,12 @@ namespace tkom {
 
     class Parser {
     public:
+        Parser() = default;
         explicit Parser(std::unique_ptr<Lexer> lexer);
 
         void setLexer(std::unique_ptr<Lexer> lexer);
+
+        void clearLexer();
 
         ~Parser() = default;
 

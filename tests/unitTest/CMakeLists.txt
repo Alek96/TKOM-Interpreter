@@ -8,6 +8,7 @@ add_subdirectory(printer)
 add_subdirectory(token)
 add_subdirectory(parser)
 add_subdirectory(ast)
+add_subdirectory(library)
 
 add_executable(${PROJECT_NAME}
         ../main.cpp

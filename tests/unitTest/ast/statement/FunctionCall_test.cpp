@@ -22,7 +22,7 @@ SCENARIO("Test for FunctionCall", "[ast][statement][FunctionCall]") {
         WHEN("Method run is coled") {
            Return ret = functionCall.run();
            THEN("Called function is proceeded") {
-               REQUIRE(ret.type == Return::_variable);
+               REQUIRE(ret.type == Return::_none);
                REQUIRE(ret.variable == var);
            }
         }
@@ -45,7 +45,7 @@ SCENARIO("Test for FunctionCall", "[ast][statement][FunctionCall]") {
         WHEN("Method run is coled") {
             Return ret = functionCall.run();
             THEN("Called function is proceeded") {
-                REQUIRE(ret.type == Return::_variable);
+                REQUIRE(ret.type == Return::_none);
                 REQUIRE(ret.variable == var);
             }
         }

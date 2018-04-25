@@ -27,9 +27,15 @@ void Parser::setLexer(std::unique_ptr<Lexer> lexer) {
     Parser::lexer = std::move(lexer);
 }
 
+void Parser::clearLexer() {
+    lexer.reset(nullptr);
+}
+
 void Parser::parse() {
-    lexer->readNextToken();
-    programParse();
+    if(lexer) {
+        lexer->readNextToken();
+        programParse();
+    }
 }
 
 ast::Return Parser::run() {
@@ -65,7 +71,6 @@ void Parser::throwExpectedTokens(std::list<TokenType> tokens) {
 
 
 void Parser::programParse() {
-
     while (lexer->getToken().type != TokenType::EndOfFile) {
         if (accept(TokenType::Function)) {
             functionDefParse();
@@ -187,7 +192,7 @@ std::unique_ptr<ast::Statement> Parser::initStatementParse() {
 
     acceptOrThrow(TokenType::Semicolon);
 
-    return std::make_unique<AssignStatement>(block->findVariable(tokenId.value), std::move(expr));
+    return std::make_unique<AssignStatement>(block->findVariable(tokenId.value, tokenId), std::move(expr));
 }
 
 std::unique_ptr<ast::Statement> Parser::assignStatementOrFunctionCallParse(Token &tokenId) {
@@ -200,7 +205,7 @@ std::unique_ptr<ast::Statement> Parser::assignStatementOrFunctionCallParse(Token
     } else {
         //variable
         existVariable(tokenId);
-        statement = std::move(assignStatementParse(block->findVariable(tokenId.value)));
+        statement = std::move(assignStatementParse(block->findVariable(tokenId.value, tokenId)));
     }
     return std::move(statement);
 }
@@ -476,13 +481,13 @@ std::unique_ptr<ast::Expression> Parser::baseMathExprParser() {
                 acceptOrThrow(TokenType::NumberLiteral, [&]() { token = lexer->getToken(); });
                 acceptOrThrow(TokenType::BracketClose);
 
-                baseMathExpr = std::make_unique<BaseMathExpr>(block->findVariable(tokenId.value),
+                baseMathExpr = std::make_unique<BaseMathExpr>(block->findVariable(tokenId.value, tokenId),
                                                               static_cast<unsigned int>(std::stoi(token.value)),
                                                               unaryMathOp);
                 baseMathExpr->addPosition(token.position);
             } else {
                 //variable
-                baseMathExpr = std::make_unique<BaseMathExpr>(block->findVariable(tokenId.value), unaryMathOp);
+                baseMathExpr = std::make_unique<BaseMathExpr>(block->findVariable(tokenId.value, tokenId), unaryMathOp);
             }
         }
     } else {
