@@ -131,7 +131,12 @@ Variable Variable::operator/(const Variable &rhs) const {
     if (rhs.variables.size() == 1) {
         var = *this;
         for (auto &variable : var.variables) {
-            variable /= rhs.variables[0];
+            if(rhs.variables[0]) {
+                variable /= rhs.variables[0];
+            } else {
+                throw MathException("Can't divide by 0 "
+                                    + (sPos != SignPosition() ? "at line: " + sPos.toString() : ""));
+            }
         }
     } else {
         throw MathException("Can't divide "
@@ -148,7 +153,12 @@ Variable Variable::operator%(const Variable &rhs) const {
     if (rhs.variables.size() == 1) {
         var = *this;
         for (auto &variable : var.variables) {
-            variable %= rhs.variables[0];
+            if(rhs.variables[0]) {
+                variable %= rhs.variables[0];
+            } else {
+                throw MathException("Can't modulo by 0 "
+                                    + (sPos != SignPosition() ? "at line: " + sPos.toString() : ""));
+            }
         }
     } else {
         throw MathException("Can't modulo "

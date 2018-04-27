@@ -3,6 +3,7 @@
 
 #include <list>
 #include <string>
+#include <utility>
 #include "statement/Statement.hpp"
 #include "modules/ast/statement/BlockStatement.hpp"
 #include "Variable.hpp"
@@ -13,7 +14,7 @@ namespace tkom {
 
         class FunctionDef {
         public:
-            explicit FunctionDef(const std::string identifier) : identifier(std::move(identifier)) {}
+            explicit FunctionDef(std::string identifier) : identifier(std::move(identifier)) {}
 
             void addParameter(const std::string &identifier) {
                 parameters.push_back(identifier);
@@ -37,6 +38,7 @@ namespace tkom {
                 for (; itVar != var.end(); ++itVar, ++itParameters) {
                     functionBlock.findVariable(*itParameters) = *itVar;
                 }
+
                 Return ret = functionBlock.run();
 
                 return ret;

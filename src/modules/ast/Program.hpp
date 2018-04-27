@@ -37,7 +37,7 @@ namespace tkom {
                         return function.second->run();
                     }
                 }
-                throw Exception("Program don't contain main function");
+                throw Exception("Program doesn't contain main function");
             };
 
         private:

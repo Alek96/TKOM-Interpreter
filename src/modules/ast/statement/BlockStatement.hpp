@@ -31,12 +31,6 @@ namespace tkom {
                 this->instructions.push_back(std::move(statement));
             }
 
-//            Statement& getLastInstruction() {
-//                return *(*--instructions.end());
-//            }
-//            void addVariable(const std::string &identifier, Variable &variable) {
-//                variables.insert({identifier, std::move(variable)});
-//            }
             void addVariable(const std::string &identifier, Variable &&variable) {
                 variables.insert({identifier, std::move(variable)});
             }
@@ -61,11 +55,22 @@ namespace tkom {
 
             Return run() override {
                 Return ret;
+                std::list<Variable> oldVariables;
+                for (auto &variable : variables) {
+                    oldVariables.push_back(variable.second);
+                }
+
                 for (auto &&instruction : instructions) {
                     ret = instruction->run();
                     if (ret.type != Return::_none)
                         break;
                 }
+
+                for (auto &&variable : variables) {
+                    variable.second = oldVariables.front();
+                    oldVariables.pop_front();
+                }
+
                 return ret;
             };
 
@@ -73,6 +78,7 @@ namespace tkom {
             BlockStatement *parentBlock;
             std::list<statBlockPtr> instructions;
             std::unordered_map<std::string, Variable> variables;
+
         };
 
     }

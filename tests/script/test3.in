@@ -1,0 +1,14 @@
+function fun(a) {
+  {
+    a = a * 2;
+    if (a < 8) {
+      fun(a);
+    }
+    print("a ", a);
+    return a;
+  }
+}
+
+function main() {
+  print(fun(2));
+}

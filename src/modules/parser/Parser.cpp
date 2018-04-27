@@ -91,10 +91,11 @@ void Parser::functionDefParse() {
     acceptOrThrow(TokenType::ParenthesisOpen);
     parametersParse(*function);
 
-    acceptOrThrow(TokenType::CurlyBracketOpen);
-    blockStatementParse(function->getFunctionBlock());
-
+    FunctionDef* func = function.get();
     program.addFunction(std::move(function));
+
+    acceptOrThrow(TokenType::CurlyBracketOpen);
+    blockStatementParse(func->getFunctionBlock());
 }
 
 void Parser::parametersParse(ast::FunctionDef &function) {

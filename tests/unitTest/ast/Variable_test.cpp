@@ -82,8 +82,14 @@ SCENARIO("Test for Variable", "[ast][Variable]") {
             THEN("Operator a / b works") {
                 REQUIRE(var / var2 == Variable({0}));
             }
+            THEN("can't a / 0") {
+                REQUIRE_THROWS(var / Variable({0}));
+            }
             THEN("Operator a % b works") {
                 REQUIRE(var % var2 == Variable({1}));
+            }
+            THEN("can't a % 0") {
+                REQUIRE_THROWS(var % Variable({0}));
             }
             THEN("Operator a && b works") {
                 REQUIRE((var && var2));

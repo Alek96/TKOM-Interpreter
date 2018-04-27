@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
             parser.parse();
             parser.run();
         } catch (tkom::Exception &e) {
-            std::cout << e.what() << std::endl;
+            //std::cout << e.what() << std::endl;
         } catch (std::exception &e) {
             std::cout << e.what() << std::endl;
         }
