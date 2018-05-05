@@ -27,3 +27,4 @@ Do zmiennych w klasie "Context" odwoływało by się za pomocą dodatkowego obie
 * Instancje BlockStatement zawarte w klasacj IfStatement i WhileStatement powinny być tworzone automatycznie - tak jak zostało to zrobione w klasie FunctionDef. A w konstruktorze powinny pozostać tylko przekazywanie expression.  
 * Okazuje się, że tworzenie hashMap w parserze trochę psuje wygląd kodu. Trzeba by je jakoś porawić (i dodać static) lub zmienić na coś innego.  
 * W WhileStatement::run nie potrzebnie zostało dodane ograniczenie czasowe wykonania pętli, trzeba się go pozbyć.  
+* Sprawdzić i dodać miejsca w których powinno być "const".  
