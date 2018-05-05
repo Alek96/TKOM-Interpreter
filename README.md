@@ -15,7 +15,7 @@ Wynik poszczególnych etapów analizy pliku oraz samego wyniku interpretacji ko�
 ### Wymagania
 * Kompilator wspierający standard **C++14**  
 * Narzędzie do budowania **CMake**  
-* Narzędzie do testuwania jednostkowego **Catch2**  
+* Narzędzie do testowania jednostkowego **Catch2**  
 
 
 ### TODO  
@@ -23,5 +23,7 @@ Wynik poszczególnych etapów analizy pliku oraz samego wyniku interpretacji ko�
 * Dodawania własnej biblioteki, powinno być bardziej ukryte przed użytkownikiem. Lepiej by było, gdyby następowało to za pomocą podmiany Readera w Lexerze, niż podmiany lexera w parserze. Obecny sposób jest mało inruicyjny dla użytkownika.  
 * Powinna zostać stworzona odzielna klasa "Context" przechowująca aktualne zmienna, które teraz są przechowywane w "BlockStatement". Dzięki temu będzie możliwę zamienienie obecnej metody "run" na constową. 
 Do zmiennych w klasie "Context" odwoływało by się za pomocą dodatkowego obiektu proxy, co ułatwiło by zapisywanie i wczytywanie ponownie wartości zmiennych (co aktualnie jest robione w metodzie "run" w BlockStatement), oraz ułatwiło by odwoływanie się do nich w każdym miejscu, w którym to potrzebne. Klasy takie jak BaseMathExpr podczas tworzenia potrzebują odpowłanie do zmiennych, ale nie do ich wartrości, więc można by przekazywać tylko wskaźnik na ten proxy. Do proxy oddelegowano by wtedy jeszcze informacje o indexie.  
+* Trzeba poprawić argument wywołania metody Parser::BlockStatementParse, jest nieintuicyjny - fakt podmiany aktualnego blocku. Możliwe że przez samo dodanie klasy "Context" zostanie to poprawione.  
+* Instancje BlockStatement zawarte w klasacj IfStatement i WhileStatement powinny być tworzone automatycznie - tak jak zostało to zrobione w klasie FunctionDef. A w konstruktorze powinny pozostać tylko przekazywanie expression.  
 * Okazuje się, że tworzenie hashMap w parserze trochę psuje wygląd kodu. Trzeba by je jakoś porawić (i dodać static) lub zmienić na coś innego.  
 * W WhileStatement::run nie potrzebnie zostało dodane ograniczenie czasowe wykonania pętli, trzeba się go pozbyć.  
